@@ -1,7 +1,7 @@
 import React from "react";
 import icon from "../image_resources/tome-heap-logo_thumbnail.ico";
 
-const Header = () => {
+const Header = ({ setLogInStatus }: { setLogInStatus: Function }) => {
   return (
     <div className="text-white absolute top-0 w-screen flex justify-between">
       <div className="flex">
@@ -10,8 +10,18 @@ const Header = () => {
       </div>
 
       <ul className="flex justify-around my-3">
-        <li className="mx-4">sign up</li>
-        <li className="mx-9">log in</li>
+        <li
+          className="mx-4 hover:underline cursor-pointer underline-offset-2"
+          onClick={() => setLogInStatus("sign up")}
+        >
+          sign up
+        </li>
+        <li
+          className="mx-9 hover:underline cursor-pointer underline-offset-2"
+          onClick={() => setLogInStatus("log in")}
+        >
+          log in
+        </li>
       </ul>
     </div>
   );
