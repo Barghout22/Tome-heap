@@ -6,18 +6,18 @@ const Header = ({ setLogInStatus }: { setLogInStatus: Function }) => {
     <div className="text-white absolute top-0 w-screen flex justify-between">
       <div className="flex">
         <img src={icon} className="rounded-full  w-9 h-9 ml-2 my-2" alt="" />
-        <h2 className="my-3">tH</h2>
+        <h2 className="my-3 text-3xl font-Pacifico">tH</h2>
       </div>
 
       <ul className="flex justify-around my-3">
         <li
-          className="mx-4 hover:underline cursor-pointer underline-offset-2"
+          className="mx-4 hover:underline cursor-pointer underline-offset-2 font-Lobster"
           onClick={() => setLogInStatus("sign up")}
         >
           sign up
         </li>
         <li
-          className="mx-9 hover:underline cursor-pointer underline-offset-2"
+          className="mx-9 hover:underline cursor-pointer underline-offset-2 font-Lobster"
           onClick={() => setLogInStatus("log in")}
         >
           log in

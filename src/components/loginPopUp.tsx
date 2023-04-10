@@ -11,7 +11,7 @@ const LogInPopUp = ({
   const signUp = status === "sign up" ? true : false;
   return (
     <div className="absolute w-full h-full flex justify-center bg-black bg-opacity-50 items-center backdrop-blur-sm">
-      <div className=" bg-white w-96 h-1/2 text-center p-7 relative flex flex-col justify-around items-center">
+      <div className=" bg-white w-96 h-1/2 text-center p-7 relative flex flex-col justify-evenly items-center">
         <button
           className="absolute w-10 top-[-20px] right-[-20px] "
           onClick={() => setLogInStatus("none")}
@@ -19,7 +19,7 @@ const LogInPopUp = ({
           <img
             src={ExitBtn}
             alt=""
-            className="rounded-full border-gray-500 border-4 border-solid"
+            className="rounded-full border-gray-500 border-4 border-solid hover:border-gray-400"
           />
         </button>
         {signUp && (
@@ -27,20 +27,20 @@ const LogInPopUp = ({
             type="text"
             name="userName"
             placeholder="enter your name"
-            className="border-gray-500 border-2 border-solid  h-10"
+            className="border-gray-500 border-2 border-solid  h-9"
           />
         )}
         <input
           type="text"
           name="email"
           placeholder="enter your e-mail"
-          className="border-gray-500 border-2 border-solid h-10"
+          className="border-gray-500 border-2 border-solid h-9"
         />
         <input
           type="password"
           name="psswrd"
           placeholder=" enter your password"
-          className="border-gray-500 border-2 border-solid h-10"
+          className="border-gray-500 border-2 border-solid h-9"
         />
         {signUp && (
           <p>
@@ -64,7 +64,7 @@ const LogInPopUp = ({
             </span>
           </p>
         )}
-        <button className="bg-black text-white w-10/12 h-9 hover:bg-gray-900">
+        <button className="bg-black text-white w-10/12 h-9 hover:bg-gray-800">
           {status}
         </button>
       </div>
