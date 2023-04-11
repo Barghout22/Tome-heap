@@ -27,6 +27,7 @@ const app = initializeApp(firebaseConfig);
 const RouteSwitch = () => {
   const [logInStatus, setLogInStatus] = useState("none");
   const [searchTerm, setSearchTerm] = useState<string>(" ");
+  const [searchType, setSearchType] = useState("book");
   return (
     <BrowserRouter>
       <Header setLogInStatus={setLogInStatus} />
@@ -34,11 +35,18 @@ const RouteSwitch = () => {
         <LogInPopUp status={logInStatus} setLogInStatus={setLogInStatus} />
       )}
       <Routes>
-        <Route path="/" element={<App setSearchTerm={setSearchTerm} />} />
+        <Route
+          path="/"
+          element={
+            <App setSearchTerm={setSearchTerm} setSearchType={setSearchType} />
+          }
+        />
         <Route path="/profile" element={<ProfileView />} />
         <Route
           path="/bookListDisplay"
-          element={<BookListView searchTerm={searchTerm} />}
+          element={
+            <BookListView searchTerm={searchTerm} searchType={searchType} />
+          }
         />
       </Routes>
     </BrowserRouter>

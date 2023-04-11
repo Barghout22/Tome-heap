@@ -3,16 +3,29 @@ import { useNavigate } from "react-router-dom";
 
 import "./App.css";
 
-function App({ setSearchTerm }: { setSearchTerm: Function }) {
+function App({
+  setSearchTerm,
+  setSearchType,
+}: {
+  setSearchTerm: Function;
+  setSearchType: Function;
+}) {
   const [srchTrmPlcHldr, setSrchTrmPlcHldr] = useState(" ");
   const navigate = useNavigate();
 
   const handleSearch = (searchValue: string) => {
     if (searchValue !== " ") {
+      setSearchType("book");
       setSearchTerm(searchValue);
       navigate("/bookListDisplay");
     }
   };
+  const handleCategSrch = (searchValue: string) => {
+    setSearchType("category");
+    setSearchTerm(searchValue);
+    navigate("/bookListDisplay");
+  };
+
   return (
     <div className="text-center bg-[url(./image_resources/booksBackground.jpg)] bg-cover h-screen flex flex-col justify-center ">
       <div>
@@ -48,7 +61,7 @@ function App({ setSearchTerm }: { setSearchTerm: Function }) {
           <li
             className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
             onClick={() => {
-              handleSearch("romance");
+              handleCategSrch("romance");
             }}
           >
             romance
@@ -56,7 +69,7 @@ function App({ setSearchTerm }: { setSearchTerm: Function }) {
           <li
             className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
             onClick={() => {
-              handleSearch("thriller");
+              handleCategSrch("thriller");
             }}
           >
             thriller
@@ -64,7 +77,7 @@ function App({ setSearchTerm }: { setSearchTerm: Function }) {
           <li
             className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
             onClick={() => {
-              handleSearch("self-help");
+              handleCategSrch("self-help");
             }}
           >
             self-help
@@ -72,7 +85,7 @@ function App({ setSearchTerm }: { setSearchTerm: Function }) {
           <li
             className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
             onClick={() => {
-              handleSearch("biography");
+              handleCategSrch("biography");
             }}
           >
             biography
@@ -80,7 +93,7 @@ function App({ setSearchTerm }: { setSearchTerm: Function }) {
           <li
             className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
             onClick={() => {
-              handleSearch("history");
+              handleCategSrch("history");
             }}
           >
             history
