@@ -27,20 +27,20 @@ const LogInPopUp = ({
             type="text"
             name="userName"
             placeholder="enter your name"
-            className="border-gray-500 border-2 border-solid  h-9"
+            className="border-gray-500 border-2 border-solid  h-9 focus:outline-none focus:ring focus:ring-blue-600"
           />
         )}
         <input
           type="text"
           name="email"
           placeholder="enter your e-mail"
-          className="border-gray-500 border-2 border-solid h-9"
+          className="border-gray-500 border-2 border-solid h-9 focus:outline-none focus:ring focus:ring-blue-600"
         />
         <input
           type="password"
           name="psswrd"
           placeholder=" enter your password"
-          className="border-gray-500 border-2 border-solid h-9"
+          className="border-gray-500 border-2 border-solid h-9 focus:outline-none focus:ring focus:ring-blue-600"
         />
         {signUp && (
           <p>
