@@ -11,7 +11,7 @@ const LogInPopUp = ({
   const signUp = status === "sign up" ? true : false;
   return (
     <div className="absolute w-full h-full flex justify-center bg-black bg-opacity-50 items-center backdrop-blur-sm">
-      <div className=" bg-white w-96 h-1/2 text-center p-7 relative flex flex-col justify-evenly items-center">
+      <div className=" bg-white w-96 h-1/2 text-center p-7 relative flex flex-col justify-evenly items-center rounded-md">
         <button
           className="absolute w-10 top-[-20px] right-[-20px] "
           onClick={() => setLogInStatus("none")}
@@ -27,20 +27,20 @@ const LogInPopUp = ({
             type="text"
             name="userName"
             placeholder="enter your name"
-            className="border-gray-500 border-2 border-solid  h-9 focus:outline-none focus:ring focus:ring-blue-600"
+            className="border-gray-500 border-2 border-solid  h-9 focus:outline-none focus:ring focus:ring-blue-600 rounded-md"
           />
         )}
         <input
           type="text"
           name="email"
           placeholder="enter your e-mail"
-          className="border-gray-500 border-2 border-solid h-9 focus:outline-none focus:ring focus:ring-blue-600"
+          className="border-gray-500 border-2 border-solid h-9 focus:outline-none focus:ring focus:ring-blue-600 rounded-md"
         />
         <input
           type="password"
           name="psswrd"
           placeholder=" enter your password"
-          className="border-gray-500 border-2 border-solid h-9 focus:outline-none focus:ring focus:ring-blue-600"
+          className="border-gray-500 border-2 border-solid h-9 focus:outline-none focus:ring focus:ring-blue-600 rounded-md"
         />
         {signUp && (
           <p>
@@ -64,7 +64,10 @@ const LogInPopUp = ({
             </span>
           </p>
         )}
-        <button className="bg-black text-white w-10/12 h-9 hover:bg-gray-800">
+        <button className="bg-amber-500 text-white w-10/12 h-9 hover:bg-amber-400 rounded-md">
+          {status} with google
+        </button>
+        <button className="bg-black text-white w-10/12 h-9 hover:bg-gray-800 rounded-md">
           {status}
         </button>
       </div>
