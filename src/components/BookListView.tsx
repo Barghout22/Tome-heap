@@ -47,7 +47,7 @@ async function reqInfo(srchWrd: string, srchType: string) {
       const newItem = {
         id: item.id,
         bookName: item.volumeInfo.title,
-        author: item.volumeInfo.authors,
+        author: item.volumeInfo.authors[0],
         pageNo: item.volumeInfo.pageCount,
         imageSrc: img,
       };
@@ -72,13 +72,13 @@ const BookListView = ({
     });
   });
   return (
-    <div className="bg-blue-500 h-screen w-screen flex flex-col p-8 flex-wrap gap-2">
+    <div className="bg-blue-500 w-screen min-h-screen flex p-10 pt-14 flex-wrap gap-2 text-white font-Lobster">
       {dsplydBkLst
         ? dsplydBkLst.map((item) => {
             return (
-              <div key={item.id} className="flex p-5">
-                <img src={item.imageSrc} alt="" className="h-12" />
-                <div className=" grid grid-cols-2 grid-rows-2 gap-2">
+              <div key={item.id} className="flex p-4 w-80">
+                <img src={item.imageSrc} alt="" className="h-32" />
+                <div className=" flex flex-col m-4">
                   <h2>{item.bookName}</h2>
                   <p>author:{item.author}</p>
                   <p>number of pages:{item.pageNo}</p>

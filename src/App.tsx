@@ -29,10 +29,10 @@ function App({
   return (
     <div className="text-center bg-[url(./image_resources/booksBackground.jpg)] bg-cover h-screen flex flex-col justify-center ">
       <div>
-        <h1 className="text-5xl text-white font-Pacifico">
+        <h1 className="md:text-5xl text-white font-Pacifico text-2xl">
           Welcome to tome heap
         </h1>
-        <p className="text-xl text-white font-Pacifico">
+        <p className="md:text-xl text-white font-Pacifico text-lg">
           view the newest books and keep track of your readings!
         </p>
       </div>
@@ -41,7 +41,7 @@ function App({
           type="text"
           name=""
           placeholder="find a book/author"
-          className="px-5 rounded-l-md transition-all origin-right focus:scale-x-110"
+          className="w-48 sm:w-auto px-5 rounded-l-md transition-all origin-right focus:scale-x-110"
           onChange={(e) => {
             setSrchTrmPlcHldr(e.target.value);
           }}
@@ -57,7 +57,7 @@ function App({
       </div>
       <div className="flex flex-col text-white items-center">
         <h3 className="mb-6 text-2xl font-Lobster">browse books by genre</h3>
-        <ul className="grid grid-cols-2 w-1/4 gap-y-6">
+        <ul className="grid grid-cols-2 w-52 gap-y-6">
           <li
             className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
             onClick={() => {
