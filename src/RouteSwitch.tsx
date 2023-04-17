@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import App from "./App";
-import Header from "./components/Header";
+import LoggedOutHeader from "./components/LoggedOutHeader";
+import LoggedInHeader from "./components/LoggedInHeader";
 import LogInPopUp from "./components/loginPopUp";
 import ProfileView from "./components/ProfileView";
 import BookListView from "./components/BookListView";
@@ -54,8 +55,12 @@ const RouteSwitch = () => {
   const [searchType, setSearchType] = useState("book");
   return (
     <BrowserRouter>
-      <Header setLogInStatus={setLogInStatus} />
-      {logInStatus !== "none" && (
+      {!!getAuth().currentUser ? (
+        <LoggedInHeader  />
+      ) : (
+        <LoggedOutHeader setLogInStatus={setLogInStatus} />
+      )}
+      {!getAuth().currentUser && logInStatus !== "none" && (
         <LogInPopUp status={logInStatus} setLogInStatus={setLogInStatus} />
       )}
       <Routes>

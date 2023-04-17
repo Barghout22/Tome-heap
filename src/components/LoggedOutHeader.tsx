@@ -1,7 +1,7 @@
 import React from "react";
 import icon from "../image_resources/tome-heap-logo_thumbnail.ico";
 
-const Header = ({ setLogInStatus }: { setLogInStatus: Function }) => {
+const LoggedOutHeader = ({ setLogInStatus }: { setLogInStatus: Function }) => {
   return (
     <div className="text-white absolute top-0 w-screen flex justify-between">
       <div className="flex">
@@ -26,4 +26,4 @@ const Header = ({ setLogInStatus }: { setLogInStatus: Function }) => {
     </div>
   );
 };
-export default Header;
+export default LoggedOutHeader;

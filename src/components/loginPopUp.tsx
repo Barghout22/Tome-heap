@@ -19,6 +19,7 @@ const LogInPopUp = ({
     // Sign in Firebase using popup auth and Google as the identity provider.
     const provider = new GoogleAuthProvider();
     await signInWithPopup(getAuth(), provider);
+    console.log(getAuth().currentUser!.displayName);
   }
 
   const signUp = status === "sign up" ? true : false;
