@@ -9,10 +9,15 @@ import {
   signOut,
 } from "firebase/auth";
 
-const LoggedInHeader = () => {
+const LoggedInHeader = ({
+  setUserSignInStatus,
+}: {
+  setUserSignInStatus: Function;
+}) => {
   function signOutUser() {
     // Sign out of Firebase.
     signOut(getAuth());
+    setUserSignInStatus(false);
   }
   return (
     <div className="text-white absolute top-0 w-screen flex justify-between">

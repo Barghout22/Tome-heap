@@ -11,15 +11,18 @@ import {
 const LogInPopUp = ({
   status,
   setLogInStatus,
+  setUserSignInStatus,
 }: {
   status: string;
   setLogInStatus: Function;
+  setUserSignInStatus: Function;
 }) => {
   async function signInWithGoogle() {
     // Sign in Firebase using popup auth and Google as the identity provider.
     const provider = new GoogleAuthProvider();
     await signInWithPopup(getAuth(), provider);
-    console.log(getAuth().currentUser!.displayName);
+    setUserSignInStatus(true);
+    setLogInStatus("none");
   }
 
   const signUp = status === "sign up" ? true : false;

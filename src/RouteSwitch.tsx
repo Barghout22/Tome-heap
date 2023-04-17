@@ -49,19 +49,23 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const RouteSwitch = () => {
-  const [userSignInStatus, setUserSignInStatus] = useState("not signed in");
+  const [userSignInStatus, setUserSignInStatus] = useState(false);
   const [logInStatus, setLogInStatus] = useState("none");
   const [searchTerm, setSearchTerm] = useState<string>(" ");
   const [searchType, setSearchType] = useState("book");
   return (
     <BrowserRouter>
-      {!!getAuth().currentUser ? (
-        <LoggedInHeader  />
+      {userSignInStatus ? (
+        <LoggedInHeader setUserSignInStatus={setUserSignInStatus} />
       ) : (
         <LoggedOutHeader setLogInStatus={setLogInStatus} />
       )}
-      {!getAuth().currentUser && logInStatus !== "none" && (
-        <LogInPopUp status={logInStatus} setLogInStatus={setLogInStatus} />
+      {!userSignInStatus && logInStatus !== "none" && (
+        <LogInPopUp
+          status={logInStatus}
+          setLogInStatus={setLogInStatus}
+          setUserSignInStatus={setUserSignInStatus}
+        />
       )}
       <Routes>
         <Route
