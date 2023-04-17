@@ -1,5 +1,12 @@
 import React from "react";
 import ExitBtn from "../image_resources/exitBtn.webp";
+import {
+  getAuth,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
 
 const LogInPopUp = ({
   status,
@@ -8,6 +15,12 @@ const LogInPopUp = ({
   status: string;
   setLogInStatus: Function;
 }) => {
+  async function signInWithGoogle() {
+    // Sign in Firebase using popup auth and Google as the identity provider.
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(getAuth(), provider);
+  }
+
   const signUp = status === "sign up" ? true : false;
   return (
     <div className="absolute w-full h-full flex justify-center bg-black bg-opacity-50 items-center backdrop-blur-sm">
@@ -64,7 +77,10 @@ const LogInPopUp = ({
             </span>
           </p>
         )}
-        <button className="bg-amber-500 text-white w-10/12 h-9 hover:bg-amber-400 rounded-md">
+        <button
+          className="bg-amber-500 text-white w-10/12 h-9 hover:bg-amber-400 rounded-md"
+          onClick={signInWithGoogle}
+        >
           {status} with google
         </button>
         <button className="bg-black text-white w-10/12 h-9 hover:bg-gray-800 rounded-md">

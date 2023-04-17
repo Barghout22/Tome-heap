@@ -21,7 +21,7 @@ async function reqInfo(srchWrd: string, srchType: string) {
   }
 
   const data = await fetch(
-    `https://www.googleapis.com/books/v1/volumes?q=${srchPhr}`
+    `https://www.googleapis.com/books/v1/volumes?q=${srchPhr}&maxResults=40`
   );
 
   const decodeData = data.json();
@@ -54,7 +54,7 @@ async function reqInfo(srchWrd: string, srchType: string) {
       return newItem;
     }
   );
-  console.log(adjustVals);
+  //   console.log(adjustVals);
   return adjustVals;
 }
 const BookListView = ({
@@ -76,10 +76,10 @@ const BookListView = ({
       {dsplydBkLst
         ? dsplydBkLst.map((item) => {
             return (
-              <div key={item.id} className="flex p-4 w-80">
+              <div key={item.id} className="flex p-4 w-80 shadow-lg">
                 <img src={item.imageSrc} alt="" className="h-32" />
                 <div className=" flex flex-col m-4">
-                  <h2>{item.bookName}</h2>
+                  <h2 className="font-bold text-2xl">{item.bookName}</h2>
                   <p>author:{item.author}</p>
                   <p>number of pages:{item.pageNo}</p>
                 </div>

@@ -5,13 +5,36 @@ import Header from "./components/Header";
 import LogInPopUp from "./components/loginPopUp";
 import ProfileView from "./components/ProfileView";
 import BookListView from "./components/BookListView";
-
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import {
+  getAuth,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  limit,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  doc,
+  serverTimestamp,
+} from "firebase/firestore";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { getPerformance } from "firebase/performance";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAUJVdYNnGggkCMDHwjV2z-1f0LXpv0AiQ",
   authDomain: "tome-heap.firebaseapp.com",
@@ -25,6 +48,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const RouteSwitch = () => {
+  const [userSignInStatus, setUserSignInStatus] = useState("not signed in");
   const [logInStatus, setLogInStatus] = useState("none");
   const [searchTerm, setSearchTerm] = useState<string>(" ");
   const [searchType, setSearchType] = useState("book");
