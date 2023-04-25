@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import ExitBtn from "../image_resources/exitBtn.webp";
 import {
   getAuth,
-  onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
-  signOut,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 
 const LogInPopUp = ({
@@ -17,15 +18,62 @@ const LogInPopUp = ({
   setLogInStatus: Function;
   setUserSignInStatus: Function;
 }) => {
+  const signUp = status === "sign up" ? true : false;
+  const [userName, setUserName] = useState(" ");
+  const [email, setEmail] = useState(" ");
+  const [password, setPassword] = useState(" ");
+  const auth = getAuth();
   async function signInWithGoogle() {
-    // Sign in Firebase using popup auth and Google as the identity provider.
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(getAuth(), provider);
+    await signInWithPopup(auth, provider);
     setUserSignInStatus(true);
     setLogInStatus("none");
   }
 
-  const signUp = status === "sign up" ? true : false;
+  async function createUserWithEmail(
+    email: string,
+    pwd: string,
+    userName: string
+  ) {
+    try {
+      await createUserWithEmailAndPassword(auth, email, pwd);
+      signInWithEmail(email, pwd);
+      await updateProfile(auth.currentUser!, { displayName: userName });
+      console.log(auth.currentUser?.displayName);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  async function signInWithEmail(email: string, pwd: string) {
+    await signInWithEmailAndPassword(auth, email, pwd);
+  }
+
+  function handleSignInLogIn() {
+    if (email !== " " && password !== " ") {
+      if (signUp) {
+        if (userName !== " ") {
+          try {
+            createUserWithEmail(email, password, userName);
+            setUserSignInStatus(true);
+          } catch (e) {
+            console.log(e);
+            return;
+          }
+          setLogInStatus("none");
+        }
+      } else {
+        try {
+          signInWithEmail(email, password);
+          setUserSignInStatus(true);
+        } catch (e) {
+          console.log(e);
+          return;
+        }
+        setLogInStatus("none");
+      }
+    }
+  }
+
   return (
     <div className="absolute w-full h-full flex justify-center bg-black bg-opacity-50 items-center backdrop-blur-sm">
       <div className=" bg-white w-96 h-1/2 text-center p-7 relative flex flex-col justify-evenly items-center rounded-md">
@@ -41,10 +89,14 @@ const LogInPopUp = ({
         </button>
         {signUp && (
           <input
+            required
             type="text"
             name="userName"
             placeholder="enter your name"
             className="border-gray-500 border-2 border-solid  h-9 focus:outline-none focus:ring focus:ring-blue-600 rounded-md"
+            onChange={(e) => {
+              setUserName(e.target.value);
+            }}
           />
         )}
         <input
@@ -52,12 +104,18 @@ const LogInPopUp = ({
           name="email"
           placeholder="enter your e-mail"
           className="border-gray-500 border-2 border-solid h-9 focus:outline-none focus:ring focus:ring-blue-600 rounded-md"
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
         />
         <input
           type="password"
           name="psswrd"
           placeholder=" enter your password"
           className="border-gray-500 border-2 border-solid h-9 focus:outline-none focus:ring focus:ring-blue-600 rounded-md"
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
         />
         {signUp && (
           <p>
@@ -87,7 +145,10 @@ const LogInPopUp = ({
         >
           {status} with google
         </button>
-        <button className="bg-black text-white w-10/12 h-9 hover:bg-gray-800 rounded-md">
+        <button
+          className="bg-black text-white w-10/12 h-9 hover:bg-gray-800 rounded-md"
+          onClick={handleSignInLogIn}
+        >
           {status}
         </button>
       </div>

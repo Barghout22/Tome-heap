@@ -19,6 +19,8 @@ const LoggedInHeader = ({
     signOut(getAuth());
     setUserSignInStatus(false);
   }
+  const userImg = getAuth().currentUser?.photoURL || userThumbnail;
+  const usrFrtNm = getAuth().currentUser?.displayName!.split(" ")[0];
   return (
     <div className="text-white absolute top-0 w-screen flex justify-between">
       <div className="flex">
@@ -28,14 +30,10 @@ const LoggedInHeader = ({
 
       <ul className="flex justify-around my-3">
         <li className="mx-4 hover:underline cursor-pointer underline-offset-2 font-Lobster">
-          {getAuth().currentUser?.displayName}
+          {usrFrtNm}
         </li>
-        <li className="rounded w-20 h-20 bg-[url(`${getAuth().currentUser?.photoURL || userThumbnail}`)]">
-          <img
-            src={getAuth().currentUser?.photoURL || userThumbnail}
-            alt=""
-            className="w-20 h-20 rounded"
-          />
+        <li>
+          <img src={userImg} alt="" className="w-11 h-11 rounded-full" />
         </li>
         <li
           className="mx-9 hover:underline cursor-pointer underline-offset-2 font-Lobster"

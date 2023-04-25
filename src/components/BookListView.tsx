@@ -9,6 +9,7 @@ type BookData = {
   bookName: "string";
   author: "string";
   pageNo: "number";
+  description: "string";
   imageSrc?: "string";
 };
 
@@ -23,9 +24,9 @@ async function reqInfo(srchWrd: string, srchType: string) {
   const data = await fetch(
     `https://www.googleapis.com/books/v1/volumes?q=${srchPhr}&maxResults=40`
   );
-
   const decodeData = data.json();
   const moreDecode = await decodeData;
+  // console.log(moreDecode);
   const DecodeItemsList = moreDecode.items;
 
   const adjustVals = DecodeItemsList.map(
@@ -35,6 +36,7 @@ async function reqInfo(srchWrd: string, srchType: string) {
         title: any;
         authors: any;
         pageCount: any;
+        description: any;
         imageLinks: { smallThumbnail: any; thumbnail: any };
       };
     }) => {
@@ -47,8 +49,9 @@ async function reqInfo(srchWrd: string, srchType: string) {
       const newItem = {
         id: item.id,
         bookName: item.volumeInfo.title,
-        author: item.volumeInfo.authors[0],
+        author: item.volumeInfo.authors ? item.volumeInfo.authors[0] : "NA",
         pageNo: item.volumeInfo.pageCount,
+        description: item.volumeInfo.description,
         imageSrc: img,
       };
       return newItem;
@@ -72,21 +75,56 @@ const BookListView = ({
     });
   });
   return (
-    <div className="bg-blue-500 w-screen min-h-screen flex p-10 pt-14 flex-wrap gap-2 text-white font-Lobster">
-      {dsplydBkLst
-        ? dsplydBkLst.map((item) => {
-            return (
-              <div key={item.id} className="flex p-4 w-80 shadow-lg">
-                <img src={item.imageSrc} alt="" className="h-32" />
-                <div className=" flex flex-col m-4">
-                  <h2 className="font-bold text-2xl">{item.bookName}</h2>
-                  <p>author:{item.author}</p>
-                  <p>number of pages:{item.pageNo}</p>
+    <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-14">
+      <h1 className="text-3xl underline underline-offset-8">
+        displaying results for:{" "}
+        <span className="font-semibold">{searchTerm}</span>
+      </h1>
+
+      <div className="bg-gray-800 w-screen  flex p-10  flex-wrap gap-2 text-white font-Lobster">
+        {dsplydBkLst
+          ? dsplydBkLst.map((item) => {
+              return (
+                <div key={item.id} className="flex p-4 w-96 h-96 shadow-lg">
+                  <img src={item.imageSrc} alt="" className="h-32" />
+                  <div className=" flex flex-col m-4 justify-between">
+                    <div>
+                      <h2 className="font-bold text-2xl">{item.bookName}</h2>
+                      <p>
+                        <span className="font-semibold">author:</span>
+                        {item.author}
+                      </p>
+                      <p>
+                        <span className="font-semibold">number of pages:</span>
+                        {item.pageNo}
+                      </p>
+                      <p>
+                        <span className="font-semibold">description:</span>
+                        {item.description
+                          ? item.description.length > 200
+                            ? `${item.description.slice(0, 200)}...
+                              `
+                            : item.description
+                          : "no description available"}
+                        {item.description && item.description.length > 200 && (
+                          <a
+                            href=""
+                            className="underline font-semibold hover:font-bold"
+                          >
+                            read more
+                          </a>
+                        )}
+                      </p>
+                    </div>
+                    <button className="bg-white rounded-full h-11 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white">
+                      add to my books
+                    </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })
-        : null}
+              );
+            })
+          : null}
+      </div>
     </div>
   );
 };
