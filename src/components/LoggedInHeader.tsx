@@ -32,25 +32,15 @@ const LoggedInHeader = ({
       </div>
 
       <ul
-        className=" w-52 mr-10 flex justify-around my-3 bg-white bg-opacity-0 hover:bg-opacity-25 rounded-lg"
+        className=" w-52 mr-10 flex justify-around my-3 bg-white bg-opacity-0 hover:bg-opacity-25 rounded-lg cursor-pointer"
         onClick={() => switchDispUserValue()}
       >
         <li className="mx-4 font-Lobster">{usrFrstNm}</li>
         <li>
           <img src={userImg} alt="" className="w-11 h-11 rounded-full" />
         </li>
-        {/* <li
-          className="mx-9 hover:underline cursor-pointer underline-offset-2 font-Lobster"
-          onClick={() => signOutUser()}
-        >
-          sign out
-        </li> */}
         <li>
-          <img
-            src={arrow}
-            alt=""
-            className="w-4 m-4 mt-2"
-          />
+          <img src={arrow} alt="" className="w-4 m-4 mt-2" />
         </li>
       </ul>
     </div>
