@@ -6,6 +6,9 @@ import LoggedInHeader from "./components/LoggedInHeader";
 import LogInPopUp from "./components/loginPopUp";
 import ProfileView from "./components/ProfileView";
 import BookListView from "./components/BookListView";
+import ViewUsrShrtcuts from "./components/userShortcutView";
+import SingleBookView from "./components/SingleBookView";
+import { BookInfo } from "./components/BookListView";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -53,10 +56,26 @@ const RouteSwitch = () => {
   const [logInStatus, setLogInStatus] = useState("none");
   const [searchTerm, setSearchTerm] = useState<string>(" ");
   const [searchType, setSearchType] = useState("book");
+  const [dispUserShrtcutMenu, setDispUserShrtcutMenu] = useState(false);
+  const [bookData, setBookData] = useState<BookInfo>({
+    id: " ",
+    bookName: " ",
+    author: " ",
+    pageNo: 0,
+    description: " ",
+    imageSrc: " ",
+  });
+
+  const switchDispUserValue = () => {
+    setDispUserShrtcutMenu(!dispUserShrtcutMenu);
+  };
   return (
     <BrowserRouter>
       {userSignInStatus ? (
-        <LoggedInHeader setUserSignInStatus={setUserSignInStatus} />
+        <LoggedInHeader
+          setUserSignInStatus={setUserSignInStatus}
+          switchDispUserValue={switchDispUserValue}
+        />
       ) : (
         <LoggedOutHeader setLogInStatus={setLogInStatus} />
       )}
@@ -66,6 +85,9 @@ const RouteSwitch = () => {
           setLogInStatus={setLogInStatus}
           setUserSignInStatus={setUserSignInStatus}
         />
+      )}
+      {userSignInStatus && dispUserShrtcutMenu && (
+        <ViewUsrShrtcuts setUserSignInStatus={setUserSignInStatus} />
       )}
       <Routes>
         <Route
@@ -78,8 +100,16 @@ const RouteSwitch = () => {
         <Route
           path="/bookListDisplay"
           element={
-            <BookListView searchTerm={searchTerm} searchType={searchType} />
+            <BookListView
+              searchTerm={searchTerm}
+              searchType={searchType}
+              setBookData={setBookData}
+            />
           }
+        />
+        <Route
+          path="/singleBookDisplay"
+          element={<SingleBookView bookData={bookData} />}
         />
       </Routes>
     </BrowserRouter>

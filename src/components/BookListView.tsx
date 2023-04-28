@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import placeholderImg from "../image_resources/placeholderThumbnail.png";
+import { useNavigate } from "react-router-dom";
 
 // AIzaSyAcl6xS8fFRelnC9x3fg_avvQSt4A87a8Y
 
-type BookData = {
-  id: "string";
-  bookName: "string";
-  author: "string";
-  pageNo: "number";
-  description: "string";
-  imageSrc?: "string";
+export type BookInfo = {
+  id: string;
+  bookName: string;
+  author: string;
+  pageNo: number;
+  description: string;
+  imageSrc?: string;
 };
 
 async function reqInfo(srchWrd: string, srchType: string) {
@@ -63,17 +64,32 @@ async function reqInfo(srchWrd: string, srchType: string) {
 const BookListView = ({
   searchTerm,
   searchType,
+  setBookData,
 }: {
   searchTerm: string;
   searchType: string;
+  setBookData: Function;
 }) => {
-  const [dsplydBkLst, setdsplydBkLst] = useState<BookData[] | undefined>();
+  const [dsplydBkLst, setdsplydBkLst] = useState<BookInfo[] | undefined>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     reqInfo(searchTerm, searchType).then((items) => {
       setdsplydBkLst(items);
     });
   });
+
+  const moveToBookDisp = (book: any) => {
+    setBookData({
+      id: book.id,
+      bookName: book.bookName,
+      author: book.author,
+      pageNo: book.pageNo,
+      description: book.description,
+      imageSrc: book.imageSrc,
+    });
+    navigate("/singleBookDisplay");
+  };
   return (
     <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-14">
       <h1 className="text-3xl underline underline-offset-8">
@@ -81,7 +97,7 @@ const BookListView = ({
         <span className="font-semibold">{searchTerm}</span>
       </h1>
 
-      <div className="bg-gray-800 w-screen  flex p-10  flex-wrap gap-2 text-white font-Lobster">
+      <div className="bg-gray-800 w-screen  flex p-10  flex-wrap gap-6 text-white font-Lobster">
         {dsplydBkLst
           ? dsplydBkLst.map((item) => {
               return (
@@ -107,12 +123,12 @@ const BookListView = ({
                             : item.description
                           : "no description available"}
                         {item.description && item.description.length > 200 && (
-                          <a
-                            href=""
-                            className="underline font-semibold hover:font-bold"
+                          <p
+                            className="underline font-semibold hover:font-bold cursor-pointer"
+                            onClick={() => moveToBookDisp(item)}
                           >
                             read more
-                          </a>
+                          </p>
                         )}
                       </p>
                     </div>
@@ -125,6 +141,7 @@ const BookListView = ({
             })
           : null}
       </div>
+      <button>Load more results</button>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
+  signOut,
 } from "firebase/auth";
 
 const LogInPopUp = ({
@@ -38,7 +39,8 @@ const LogInPopUp = ({
     try {
       await createUserWithEmailAndPassword(auth, email, pwd);
       signInWithEmail(email, pwd);
-      await updateProfile(auth.currentUser!, { displayName: userName });
+      updateProfile(auth.currentUser!, { displayName: userName });
+      signOut(auth);
       console.log(auth.currentUser?.displayName);
     } catch (e) {
       console.log(e);
@@ -54,7 +56,6 @@ const LogInPopUp = ({
         if (userName !== " ") {
           try {
             createUserWithEmail(email, password, userName);
-            setUserSignInStatus(true);
           } catch (e) {
             console.log(e);
             return;
@@ -64,6 +65,7 @@ const LogInPopUp = ({
       } else {
         try {
           signInWithEmail(email, password);
+          console.log(auth.currentUser?.displayName);
           setUserSignInStatus(true);
         } catch (e) {
           console.log(e);
@@ -139,17 +141,18 @@ const LogInPopUp = ({
             </span>
           </p>
         )}
+
         <button
-          className="bg-amber-500 text-white w-10/12 h-9 hover:bg-amber-400 rounded-md"
-          onClick={signInWithGoogle}
-        >
-          {status} with google
-        </button>
-        <button
-          className="bg-black text-white w-10/12 h-9 hover:bg-gray-800 rounded-md"
+          className="bg-black text-white w-10/12 h-9 hover:bg-gray-800 "
           onClick={handleSignInLogIn}
         >
           {status}
+        </button>
+        <button
+          className="bg-amber-500 text-white w-10/12 h-9 hover:bg-amber-400 "
+          onClick={signInWithGoogle}
+        >
+          {status} with google
         </button>
       </div>
     </div>

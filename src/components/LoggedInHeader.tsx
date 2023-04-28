@@ -1,5 +1,6 @@
 import React from "react";
 import icon from "../image_resources/tome-heap-logo_thumbnail.ico";
+import arrow from "../image_resources/arrowDownIcon.png";
 import userThumbnail from "../image_resources/userDefaultImage.png";
 import {
   getAuth,
@@ -11,8 +12,10 @@ import {
 
 const LoggedInHeader = ({
   setUserSignInStatus,
+  switchDispUserValue,
 }: {
   setUserSignInStatus: Function;
+  switchDispUserValue: Function;
 }) => {
   function signOutUser() {
     // Sign out of Firebase.
@@ -20,7 +23,7 @@ const LoggedInHeader = ({
     setUserSignInStatus(false);
   }
   const userImg = getAuth().currentUser?.photoURL || userThumbnail;
-  const usrFrtNm = getAuth().currentUser?.displayName!.split(" ")[0];
+  const usrFrstNm = getAuth().currentUser?.displayName!.split(" ")[0];
   return (
     <div className="text-white absolute top-0 w-screen flex justify-between">
       <div className="flex">
@@ -28,18 +31,26 @@ const LoggedInHeader = ({
         <h2 className="my-3 text-3xl font-Pacifico">tH</h2>
       </div>
 
-      <ul className="flex justify-around my-3">
-        <li className="mx-4 hover:underline cursor-pointer underline-offset-2 font-Lobster">
-          {usrFrtNm}
-        </li>
+      <ul
+        className=" w-52 mr-10 flex justify-around my-3 bg-white bg-opacity-0 hover:bg-opacity-25 rounded-lg"
+        onClick={() => switchDispUserValue()}
+      >
+        <li className="mx-4 font-Lobster">{usrFrstNm}</li>
         <li>
           <img src={userImg} alt="" className="w-11 h-11 rounded-full" />
         </li>
-        <li
+        {/* <li
           className="mx-9 hover:underline cursor-pointer underline-offset-2 font-Lobster"
           onClick={() => signOutUser()}
         >
           sign out
+        </li> */}
+        <li>
+          <img
+            src={arrow}
+            alt=""
+            className="w-4 m-4 mt-2"
+          />
         </li>
       </ul>
     </div>
