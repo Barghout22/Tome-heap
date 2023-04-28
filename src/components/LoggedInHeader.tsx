@@ -2,6 +2,7 @@ import React from "react";
 import icon from "../image_resources/tome-heap-logo_thumbnail.ico";
 import arrow from "../image_resources/arrowDownIcon.png";
 import userThumbnail from "../image_resources/userDefaultImage.png";
+import { useNavigate } from "react-router-dom";
 import {
   getAuth,
   onAuthStateChanged,
@@ -22,13 +23,21 @@ const LoggedInHeader = ({
     signOut(getAuth());
     setUserSignInStatus(false);
   }
+  const navigate = useNavigate();
   const userImg = getAuth().currentUser?.photoURL || userThumbnail;
   const usrFrstNm = getAuth().currentUser?.displayName!.split(" ")[0];
   return (
     <div className="text-white absolute top-0 w-screen flex justify-between">
       <div className="flex">
         <img src={icon} className="rounded-full  w-9 h-9 ml-2 my-2" alt="" />
-        <h2 className="my-3 text-3xl font-Pacifico">tH</h2>
+        <h2
+          className="my-3 text-3xl font-Pacifico cursor-pointer hover:underline"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          tH
+        </h2>
       </div>
 
       <ul

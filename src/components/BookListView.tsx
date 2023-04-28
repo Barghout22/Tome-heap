@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import placeholderImg from "../image_resources/placeholderThumbnail.png";
-import { useNavigate } from "react-router-dom";
-
-// AIzaSyAcl6xS8fFRelnC9x3fg_avvQSt4A87a8Y
+import BookDispCardComponent from "./BookDispCardComponent";
 
 export type BookInfo = {
   id: string;
@@ -14,17 +12,22 @@ export type BookInfo = {
   imageSrc?: string;
 };
 
-async function reqInfo(srchWrd: string, srchType: string) {
+async function reqInfo(
+  srchWrd: string,
+  srchType: string,
+  noOfSearches: number
+) {
   let srchPhr = " ";
   if (srchType === "book") {
     srchPhr = srchWrd;
   } else if (srchType === "category") {
     srchPhr = `subject:${srchWrd}`;
   }
-
-  const data = await fetch(
-    `https://www.googleapis.com/books/v1/volumes?q=${srchPhr}&maxResults=40`
-  );
+  let url =
+    noOfSearches > 0
+      ? `https://www.googleapis.com/books/v1/volumes?q=${srchPhr}&startIndex=${noOfSearches}`
+      : `https://www.googleapis.com/books/v1/volumes?q=${srchPhr}`;
+  const data = await fetch(url);
   const decodeData = data.json();
   const moreDecode = await decodeData;
   // console.log(moreDecode);
@@ -70,25 +73,27 @@ const BookListView = ({
   searchType: string;
   setBookData: Function;
 }) => {
-  const [dsplydBkLst, setdsplydBkLst] = useState<BookInfo[] | undefined>();
-  const navigate = useNavigate();
+  const [displayBookList, setdsplydBkLst] = useState<BookInfo[] | undefined>();
+  const [noOfSearches, setNoOfSearches] = useState(0);
 
   useEffect(() => {
-    reqInfo(searchTerm, searchType).then((items) => {
+    reqInfo(searchTerm, searchType, noOfSearches).then((items) => {
       setdsplydBkLst(items);
     });
   });
 
-  const moveToBookDisp = (book: any) => {
-    setBookData({
-      id: book.id,
-      bookName: book.bookName,
-      author: book.author,
-      pageNo: book.pageNo,
-      description: book.description,
-      imageSrc: book.imageSrc,
+  const getMoreResults = () => {
+    let searchVal = noOfSearches + 11;
+    let bookInfoHolder = displayBookList;
+    setNoOfSearches(searchVal);
+    console.log(noOfSearches);
+    reqInfo(searchTerm, searchType, searchVal).then((items) => {
+      bookInfoHolder = [...bookInfoHolder!, ...items];
+      console.log(noOfSearches);
+      console.log(bookInfoHolder);
+      setdsplydBkLst(bookInfoHolder);
+      console.log(displayBookList);
     });
-    navigate("/singleBookDisplay");
   };
   return (
     <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-14">
@@ -97,51 +102,19 @@ const BookListView = ({
         <span className="font-semibold">{searchTerm}</span>
       </h1>
 
-      <div className="bg-gray-800 w-screen  flex p-10  flex-wrap gap-6 text-white font-Lobster">
-        {dsplydBkLst
-          ? dsplydBkLst.map((item) => {
-              return (
-                <div key={item.id} className="flex p-4 w-96 h-96 shadow-lg">
-                  <img src={item.imageSrc} alt="" className="h-32" />
-                  <div className=" flex flex-col m-4 justify-between">
-                    <div>
-                      <h2 className="font-bold text-2xl">{item.bookName}</h2>
-                      <p>
-                        <span className="font-semibold">author:</span>
-                        {item.author}
-                      </p>
-                      <p>
-                        <span className="font-semibold">number of pages:</span>
-                        {item.pageNo}
-                      </p>
-                      <p>
-                        <span className="font-semibold">description:</span>
-                        {item.description
-                          ? item.description.length > 200
-                            ? `${item.description.slice(0, 200)}...
-                              `
-                            : item.description
-                          : "no description available"}
-                        {item.description && item.description.length > 200 && (
-                          <p
-                            className="underline font-semibold hover:font-bold cursor-pointer"
-                            onClick={() => moveToBookDisp(item)}
-                          >
-                            read more
-                          </p>
-                        )}
-                      </p>
-                    </div>
-                    <button className="bg-white rounded-full h-11 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white">
-                      add to my books
-                    </button>
-                  </div>
-                </div>
-              );
-            })
-          : null}
-      </div>
-      <button>Load more results</button>
+      {displayBookList && (
+        <div className="bg-gray-800 w-screen  flex p-10  flex-wrap gap-6 text-white font-Lobster">
+          {displayBookList.map((item) => (
+            <BookDispCardComponent book={item} setBookData={setBookData} />
+          ))}
+        </div>
+      )}
+      <button
+        className="w-11/12 bg-white text-black text-center rounded-lg ml-10 mb-10 mt-10 hover:bg-slate-300"
+        onClick={getMoreResults}
+      >
+        Load more results
+      </button>
     </div>
   );
 };
