@@ -32,7 +32,7 @@ async function reqInfo(
   const moreDecode = await decodeData;
   // console.log(moreDecode);
   const DecodeItemsList = moreDecode.items;
-
+  // console.log(DecodeItemsList);
   const adjustVals = DecodeItemsList.map(
     (item: {
       id: any;
@@ -73,26 +73,37 @@ const BookListView = ({
   searchType: string;
   setBookData: Function;
 }) => {
-  const [displayBookList, setdsplydBkLst] = useState<BookInfo[] | undefined>();
+  const [displayBookList, setdisplaydBookList] = useState<BookInfo[]>([
+    {
+      id: "string",
+      bookName: "string",
+      author: "string",
+      pageNo: 0,
+      description: " string",
+      imageSrc: "string",
+    },
+  ]);
   const [noOfSearches, setNoOfSearches] = useState(0);
 
   useEffect(() => {
     reqInfo(searchTerm, searchType, noOfSearches).then((items) => {
-      setdsplydBkLst(items);
+      setdisplaydBookList(items);
+      console.log(displayBookList);
     });
-  });
+  }, []);
 
   const getMoreResults = () => {
     let searchVal = noOfSearches + 11;
-    let bookInfoHolder = displayBookList;
+    console.log("searchvalue", searchVal);
     setNoOfSearches(searchVal);
-    console.log(noOfSearches);
     reqInfo(searchTerm, searchType, searchVal).then((items) => {
-      bookInfoHolder = [...bookInfoHolder!, ...items];
-      console.log(noOfSearches);
-      console.log(bookInfoHolder);
-      setdsplydBkLst(bookInfoHolder);
-      console.log(displayBookList);
+      let bookInfoHolder: BookInfo[] = displayBookList
+        ? [...displayBookList, ...items]
+        : items;
+      console.log("noOfSearches", noOfSearches);
+      console.log("bookInfoHolder", bookInfoHolder);
+      setdisplaydBookList(bookInfoHolder);
+      console.log("displayBookList", displayBookList);
     });
   };
   return (
