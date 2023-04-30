@@ -113,7 +113,7 @@ const BookListView = ({
         <span className="font-semibold">{searchTerm}</span>
       </h1>
 
-      {displayBookList && (
+      {displayBookList.length > 1 && (
         <div className="bg-gray-800 w-screen  flex p-10  flex-wrap gap-6 text-white font-Lobster">
           {displayBookList.map((item) => (
             <BookDispCardComponent book={item} setBookData={setBookData} />

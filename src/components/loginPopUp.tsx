@@ -37,17 +37,20 @@ const LogInPopUp = ({
     userName: string
   ) {
     try {
-      await createUserWithEmailAndPassword(auth, email, pwd);
-      signInWithEmail(email, pwd);
-      updateProfile(auth.currentUser!, { displayName: userName });
-      signOut(auth);
-      console.log(auth.currentUser?.displayName);
+      await createUserWithEmailAndPassword(auth, email, pwd).then(() => {
+        updateProfile(auth.currentUser!, { displayName: userName });
+        console.log(auth.currentUser?.displayName);
+        signOut(auth);
+      });
     } catch (e) {
       console.log(e);
     }
   }
   async function signInWithEmail(email: string, pwd: string) {
-    await signInWithEmailAndPassword(auth, email, pwd);
+    await signInWithEmailAndPassword(auth, email, pwd).then(() => {
+      console.log(auth.currentUser?.displayName);
+      setUserSignInStatus(true);
+    });
   }
 
   function handleSignInLogIn() {
@@ -65,8 +68,6 @@ const LogInPopUp = ({
       } else {
         try {
           signInWithEmail(email, password);
-          console.log(auth.currentUser?.displayName);
-          setUserSignInStatus(true);
         } catch (e) {
           console.log(e);
           return;
