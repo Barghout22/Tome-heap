@@ -3,12 +3,15 @@ import { getAuth, signOut } from "firebase/auth";
 
 const ViewUsrShrtcuts = ({
   setUserSignInStatus,
+  switchDispUserValue,
 }: {
   setUserSignInStatus: Function;
+  switchDispUserValue: Function;
 }) => {
   const signOUt = () => {
     signOut(getAuth());
     setUserSignInStatus(false);
+    switchDispUserValue();
   };
   return (
     <ul className="bg-white w-52 rounded-md absolute top-16 right-10 px-4 py-2 cursor-pointer">

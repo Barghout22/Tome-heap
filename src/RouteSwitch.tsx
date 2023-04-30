@@ -87,7 +87,10 @@ const RouteSwitch = () => {
         />
       )}
       {userSignInStatus && dispUserShrtcutMenu && (
-        <ViewUsrShrtcuts setUserSignInStatus={setUserSignInStatus} />
+        <ViewUsrShrtcuts
+          setUserSignInStatus={setUserSignInStatus}
+          switchDispUserValue={switchDispUserValue}
+        />
       )}
       <Routes>
         <Route

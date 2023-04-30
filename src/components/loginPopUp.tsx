@@ -39,7 +39,7 @@ const LogInPopUp = ({
     try {
       await createUserWithEmailAndPassword(auth, email, pwd).then(() => {
         updateProfile(auth.currentUser!, { displayName: userName });
-        console.log(auth.currentUser?.displayName);
+        // console.log(auth.currentUser?.displayName);
         signOut(auth);
       });
     } catch (e) {
@@ -48,7 +48,7 @@ const LogInPopUp = ({
   }
   async function signInWithEmail(email: string, pwd: string) {
     await signInWithEmailAndPassword(auth, email, pwd).then(() => {
-      console.log(auth.currentUser?.displayName);
+      // console.log(auth.currentUser?.displayName);
       setUserSignInStatus(true);
     });
   }
