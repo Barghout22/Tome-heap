@@ -68,10 +68,14 @@ const BookListView = ({
   searchTerm,
   searchType,
   setBookData,
+  userSignInStatus,
+  setLogInStatus,
 }: {
   searchTerm: string;
   searchType: string;
+  userSignInStatus: boolean;
   setBookData: Function;
+  setLogInStatus: Function;
 }) => {
   const [displayBookList, setdisplaydBookList] = useState<BookInfo[]>([
     {
@@ -88,22 +92,21 @@ const BookListView = ({
   useEffect(() => {
     reqInfo(searchTerm, searchType, noOfSearches).then((items) => {
       setdisplaydBookList(items);
-      console.log(displayBookList);
+      // console.log(displayBookList);
     });
   }, []);
 
   const getMoreResults = () => {
     let searchVal = noOfSearches + 11;
-    console.log("searchvalue", searchVal);
+    // console.log("searchvalue", searchVal);
     setNoOfSearches(searchVal);
     reqInfo(searchTerm, searchType, searchVal).then((items) => {
       let bookInfoHolder: BookInfo[] = displayBookList
         ? [...displayBookList, ...items]
         : items;
-      console.log("noOfSearches", noOfSearches);
-      console.log("bookInfoHolder", bookInfoHolder);
+      // console.log("noOfSearches", noOfSearches);
+      // console.log("bookInfoHolder", bookInfoHolder);
       setdisplaydBookList(bookInfoHolder);
-      console.log("displayBookList", displayBookList);
     });
   };
   return (
@@ -116,7 +119,12 @@ const BookListView = ({
       {displayBookList.length > 1 && (
         <div className="bg-gray-800 w-screen  flex p-10  flex-wrap gap-6 text-white font-Lobster">
           {displayBookList.map((item) => (
-            <BookDispCardComponent book={item} setBookData={setBookData} />
+            <BookDispCardComponent
+              book={item}
+              setBookData={setBookData}
+              userSignInStatus={userSignInStatus}
+              setLogInStatus={setLogInStatus}
+            />
           ))}
         </div>
       )}

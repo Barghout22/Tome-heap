@@ -1,7 +1,15 @@
 import React from "react";
 
-const AddBookToUserListBtn = () => {
-  const handleAddition = () => {};
+const AddBookToUserListBtn = ({
+  userSignInStatus,
+  setLogInStatus,
+}: {
+  userSignInStatus: boolean;
+  setLogInStatus: Function;
+}) => {
+  const handleAddition = () => {
+    userSignInStatus ? null : setLogInStatus("sign up");
+  };
   return (
     <button
       className="bg-white rounded-full h-11 mt-14 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"

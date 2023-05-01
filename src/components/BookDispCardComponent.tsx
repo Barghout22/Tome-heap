@@ -7,9 +7,13 @@ import AddBookToUserListBtn from "./addBookToUsrListBtn";
 const BookDispCardComponent = ({
   book,
   setBookData,
+  userSignInStatus,
+  setLogInStatus,
 }: {
   book: BookInfo;
+  userSignInStatus: boolean;
   setBookData: Function;
+  setLogInStatus: Function;
 }) => {
   const navigate = useNavigate();
   const moveToBookDisp = (book: any) => {
@@ -61,7 +65,10 @@ const BookDispCardComponent = ({
             )}
           </p>
         </div>
-        <AddBookToUserListBtn />
+        <AddBookToUserListBtn
+          userSignInStatus={userSignInStatus}
+          setLogInStatus={setLogInStatus}
+        />
       </div>
     </div>
   );

@@ -57,7 +57,7 @@ function App({
       </div>
       <div className="flex flex-col text-white items-center">
         <h3 className="mb-6 text-2xl font-Lobster">browse books by genre</h3>
-        <ul className="grid grid-cols-2 w-52 gap-y-6">
+        <ul className="grid grid-cols-3 w-52 gap-y-6 gap-x-8">
           <li
             className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
             onClick={() => {
@@ -88,7 +88,7 @@ function App({
               handleCategSrch("biography");
             }}
           >
-            biography
+            Biography
           </li>
           <li
             className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
@@ -96,7 +96,63 @@ function App({
               handleCategSrch("history");
             }}
           >
-            history
+            History
+          </li>
+          <li
+            className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
+            onClick={() => {
+              handleCategSrch("mystery");
+            }}
+          >
+            Mystery
+          </li>
+          <li
+            className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
+            onClick={() => {
+              handleCategSrch("comic books");
+            }}
+          >
+            Comic books
+          </li>
+          <li
+            className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
+            onClick={() => {
+              handleCategSrch("action and adventure");
+            }}
+          >
+            Action & Adventure
+          </li>
+          <li
+            className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
+            onClick={() => {
+              handleCategSrch("Fantasy");
+            }}
+          >
+            Fantasy
+          </li>
+          <li
+            className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
+            onClick={() => {
+              handleCategSrch("Horror");
+            }}
+          >
+            Horror
+          </li>
+          <li
+            className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
+            onClick={() => {
+              handleCategSrch("Manga");
+            }}
+          >
+            Manga
+          </li>
+          <li
+            className="hover:underline underline-offset-2 cursor-pointer font-Lobster"
+            onClick={() => {
+              handleCategSrch("superheroes");
+            }}
+          >
+            superheroes
           </li>
         </ul>
       </div>

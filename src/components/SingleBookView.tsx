@@ -2,7 +2,15 @@ import React from "react";
 import { BookInfo } from "./BookListView";
 import AddBookToUserListBtn from "./addBookToUsrListBtn";
 
-const SingleBookView = ({ bookData }: { bookData: BookInfo }) => {
+const SingleBookView = ({
+  bookData,
+  userSignInStatus,
+  setLogInStatus,
+}: {
+  bookData: BookInfo;
+  userSignInStatus: boolean;
+  setLogInStatus: Function;
+}) => {
   return (
     <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-20  pl-14">
       <div className="flex ">
@@ -12,7 +20,10 @@ const SingleBookView = ({ bookData }: { bookData: BookInfo }) => {
           <h2 className="text-2xl">{bookData.author}</h2>
           <h3 className="text-2xl">{bookData.pageNo} pages</h3>
           <p className="text-xl">{bookData.description}</p>
-          <AddBookToUserListBtn />
+          <AddBookToUserListBtn
+            userSignInStatus={userSignInStatus}
+            setLogInStatus={setLogInStatus}
+          />
         </div>
       </div>
     </div>

@@ -90,6 +90,7 @@ const LogInPopUp = ({
             className="rounded-full border-gray-500 border-4 border-solid hover:border-gray-400"
           />
         </button>
+        <p>*all fields are required to proceed</p>
         {signUp && (
           <input
             required

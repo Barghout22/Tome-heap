@@ -107,12 +107,20 @@ const RouteSwitch = () => {
               searchTerm={searchTerm}
               searchType={searchType}
               setBookData={setBookData}
+              userSignInStatus={userSignInStatus}
+              setLogInStatus={setLogInStatus}
             />
           }
         />
         <Route
           path="/singleBookDisplay"
-          element={<SingleBookView bookData={bookData} />}
+          element={
+            <SingleBookView
+              bookData={bookData}
+              userSignInStatus={userSignInStatus}
+              setLogInStatus={setLogInStatus}
+            />
+          }
         />
       </Routes>
     </BrowserRouter>
