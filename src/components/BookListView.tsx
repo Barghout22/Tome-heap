@@ -54,7 +54,7 @@ async function reqInfo(
         id: item.id,
         bookName: item.volumeInfo.title,
         author: item.volumeInfo.authors ? item.volumeInfo.authors[0] : "NA",
-        pageNo: item.volumeInfo.pageCount,
+        pageNo: item.volumeInfo.pageCount ? item.volumeInfo.pageCount : "NA",
         description: item.volumeInfo.description,
         imageSrc: img,
       };

@@ -1,7 +1,28 @@
 import React from "react";
+import { useEffect, useState } from "react";
 import { BookInfo } from "./BookListView";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+
 import AddBookToUserListBtn from "./addBookToUsrListBtn";
 
+const checkForBook = async (id: string) => {
+  const userBookCluster = `userBookList-${getAuth().currentUser?.uid}`;
+  let returnVal = false;
+  const q = query(
+    collection(getFirestore(), userBookCluster),
+    where("id", "==", id)
+  );
+  const querySnapshot = await getDocs(q);
+  querySnapshot.docs.length > 0 ? (returnVal = true) : (returnVal = false);
+  return returnVal;
+};
 const SingleBookView = ({
   bookData,
   userSignInStatus,
@@ -11,6 +32,14 @@ const SingleBookView = ({
   userSignInStatus: boolean;
   setLogInStatus: Function;
 }) => {
+  const [bookPresentInUserList, setBookPresentInUserList] = useState(false);
+  useEffect(() => {
+    if (userSignInStatus) {
+      checkForBook(bookData.id).then((value) => {
+        setBookPresentInUserList(value);
+      });
+    }
+  }, []);
   return (
     <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-20  pl-14">
       <div className="flex ">
@@ -24,6 +53,8 @@ const SingleBookView = ({
             userSignInStatus={userSignInStatus}
             setLogInStatus={setLogInStatus}
             book={bookData}
+            bookPresentInUserList={bookPresentInUserList}
+            setBookPresentInUserList={setBookPresentInUserList}
           />
         </div>
       </div>

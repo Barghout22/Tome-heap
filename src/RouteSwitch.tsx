@@ -8,6 +8,7 @@ import ProfileView from "./components/ProfileView";
 import BookListView from "./components/BookListView";
 import ViewUsrShrtcuts from "./components/userShortcutView";
 import SingleBookView from "./components/SingleBookView";
+import ProfileBookDisp from "./components/profileBookDisplay";
 import { BookInfo } from "./components/BookListView";
 import { initializeApp } from "firebase/app";
 
@@ -52,6 +53,7 @@ const RouteSwitch = () => {
   const [searchType, setSearchType] = useState("book");
   const [dispUserShrtcutMenu, setDispUserShrtcutMenu] = useState(false);
   const [viewOwnProfile, setViewOwnProfile] = useState(true);
+  const [userID, setUserID] = useState("none");
   const [bookData, setBookData] = useState<BookInfo>({
     id: " ",
     bookName: " ",
@@ -86,6 +88,7 @@ const RouteSwitch = () => {
           setUserSignInStatus={setUserSignInStatus}
           switchDispUserValue={switchDispUserValue}
           setViewOwnProfile={setViewOwnProfile}
+          setUserID={setUserID}
         />
       )}
       <Routes>
@@ -120,6 +123,10 @@ const RouteSwitch = () => {
               setLogInStatus={setLogInStatus}
             />
           }
+        />
+        <Route
+          path="/ProfileBookListDisplay"
+          element={<ProfileBookDisp userID={userID} />}
         />
       </Routes>
     </BrowserRouter>

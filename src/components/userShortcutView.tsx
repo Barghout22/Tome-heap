@@ -6,10 +6,12 @@ const ViewUsrShrtcuts = ({
   setUserSignInStatus,
   switchDispUserValue,
   setViewOwnProfile,
+  setUserID,
 }: {
   setUserSignInStatus: Function;
   switchDispUserValue: Function;
   setViewOwnProfile: Function;
+  setUserID: Function;
 }) => {
   const navigate = useNavigate();
   const signOUt = () => {
@@ -20,15 +22,23 @@ const ViewUsrShrtcuts = ({
   };
   const goToProfile = () => {
     setViewOwnProfile(true);
-    navigate("/profile");
     switchDispUserValue();
+    navigate("/profile");
+  };
+  const ViewOwnBooks = () => {
+    const userID = `userBookList-${getAuth().currentUser?.uid}`;
+    setUserID(userID);
+    switchDispUserValue();
+    navigate("/ProfileBookListDisplay");
   };
   return (
     <ul className="bg-white w-52 rounded-md absolute top-16 right-10 px-4 py-2 cursor-pointer">
       <li className="hover:bg-slate-400" onClick={goToProfile}>
         Profile
       </li>
-      <li className="hover:bg-slate-400">My books</li>
+      <li className="hover:bg-slate-400" onClick={ViewOwnBooks}>
+        My books
+      </li>
       <li className="hover:bg-slate-400" onClick={signOUt}>
         Sign out
       </li>

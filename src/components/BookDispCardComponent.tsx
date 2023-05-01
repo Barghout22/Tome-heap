@@ -1,8 +1,29 @@
 import React from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookInfo } from "./BookListView";
 import AddBookToUserListBtn from "./addBookToUsrListBtn";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 // import uniqid from "uniqid"
+
+const checkForBook = async (id: string) => {
+  const userBookCluster = `userBookList-${getAuth().currentUser?.uid}`;
+  let returnVal = false;
+  const q = query(
+    collection(getFirestore(), userBookCluster),
+    where("id", "==", id)
+  );
+  const querySnapshot = await getDocs(q);
+  querySnapshot.docs.length > 0 ? (returnVal = true) : (returnVal = false);
+  return returnVal;
+};
 
 const BookDispCardComponent = ({
   book,
@@ -16,6 +37,15 @@ const BookDispCardComponent = ({
   setLogInStatus: Function;
 }) => {
   const navigate = useNavigate();
+  const [bookPresentInUserList, setBookPresentInUserList] = useState(false);
+  useEffect(() => {
+    if (userSignInStatus) {
+      checkForBook(book.id).then((value) => {
+        setBookPresentInUserList(value);
+      });
+    }
+  }, []);
+
   const moveToBookDisp = (book: any) => {
     setBookData({
       id: book.id,
@@ -69,6 +99,8 @@ const BookDispCardComponent = ({
           userSignInStatus={userSignInStatus}
           setLogInStatus={setLogInStatus}
           book={book}
+          bookPresentInUserList={bookPresentInUserList}
+          setBookPresentInUserList={setBookPresentInUserList}
         />
       </div>
     </div>
