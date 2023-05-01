@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import icon from "../image_resources/tome-heap-logo_thumbnail.ico";
 import ExitBtn from "../image_resources/exitBtn.webp";
 import {
   getAuth,
@@ -90,6 +91,10 @@ const LogInPopUp = ({
             className="rounded-full border-gray-500 border-4 border-solid hover:border-gray-400"
           />
         </button>
+        <div className="flex">
+          <img src={icon} className="rounded-full  w-9 h-9 ml-2 my-2" alt="" />
+          <h2 className="my-3 text-3xl font-Pacifico ">tH</h2>
+        </div>
         <p>*all fields are required to proceed</p>
         {signUp && (
           <input

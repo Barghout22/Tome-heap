@@ -1,14 +1,41 @@
 import React from "react";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  limit,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  doc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { BookInfo } from "./BookListView";
 
 const AddBookToUserListBtn = ({
   userSignInStatus,
   setLogInStatus,
+  book,
 }: {
   userSignInStatus: boolean;
   setLogInStatus: Function;
+  book: BookInfo;
 }) => {
-  const handleAddition = () => {
-    userSignInStatus ? null : setLogInStatus("sign up");
+  const handleAddition = async () => {
+    if (userSignInStatus) {
+      console.log(getAuth().currentUser?.uid);
+      const userBookCluster = `userBookList-${getAuth().currentUser?.uid}`;
+      try {
+        await addDoc(collection(getFirestore(), userBookCluster), book);
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      setLogInStatus("sign up");
+    }
   };
   return (
     <button

@@ -10,13 +10,7 @@ import ViewUsrShrtcuts from "./components/userShortcutView";
 import SingleBookView from "./components/SingleBookView";
 import { BookInfo } from "./components/BookListView";
 import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-} from "firebase/auth";
+
 import {
   getFirestore,
   collection,
@@ -57,6 +51,7 @@ const RouteSwitch = () => {
   const [searchTerm, setSearchTerm] = useState<string>(" ");
   const [searchType, setSearchType] = useState("book");
   const [dispUserShrtcutMenu, setDispUserShrtcutMenu] = useState(false);
+  const [viewOwnProfile, setViewOwnProfile] = useState(true);
   const [bookData, setBookData] = useState<BookInfo>({
     id: " ",
     bookName: " ",
@@ -90,6 +85,7 @@ const RouteSwitch = () => {
         <ViewUsrShrtcuts
           setUserSignInStatus={setUserSignInStatus}
           switchDispUserValue={switchDispUserValue}
+          setViewOwnProfile={setViewOwnProfile}
         />
       )}
       <Routes>
@@ -99,7 +95,10 @@ const RouteSwitch = () => {
             <App setSearchTerm={setSearchTerm} setSearchType={setSearchType} />
           }
         />
-        <Route path="/profile" element={<ProfileView />} />
+        <Route
+          path="/profile"
+          element={<ProfileView viewOwnProfile={viewOwnProfile} />}
+        />
         <Route
           path="/bookListDisplay"
           element={

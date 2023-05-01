@@ -23,6 +23,7 @@ const SingleBookView = ({
           <AddBookToUserListBtn
             userSignInStatus={userSignInStatus}
             setLogInStatus={setLogInStatus}
+            book={bookData}
           />
         </div>
       </div>

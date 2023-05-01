@@ -5,9 +5,11 @@ import { useNavigate } from "react-router-dom";
 const ViewUsrShrtcuts = ({
   setUserSignInStatus,
   switchDispUserValue,
+  setViewOwnProfile,
 }: {
   setUserSignInStatus: Function;
   switchDispUserValue: Function;
+  setViewOwnProfile: Function;
 }) => {
   const navigate = useNavigate();
   const signOUt = () => {
@@ -17,6 +19,7 @@ const ViewUsrShrtcuts = ({
     navigate("/");
   };
   const goToProfile = () => {
+    setViewOwnProfile(true);
     navigate("/profile");
     switchDispUserValue();
   };

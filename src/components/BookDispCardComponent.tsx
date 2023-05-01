@@ -68,6 +68,7 @@ const BookDispCardComponent = ({
         <AddBookToUserListBtn
           userSignInStatus={userSignInStatus}
           setLogInStatus={setLogInStatus}
+          book={book}
         />
       </div>
     </div>
