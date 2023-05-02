@@ -55,7 +55,9 @@ async function reqInfo(
         bookName: item.volumeInfo.title,
         author: item.volumeInfo.authors ? item.volumeInfo.authors[0] : "NA",
         pageNo: item.volumeInfo.pageCount ? item.volumeInfo.pageCount : "NA",
-        description: item.volumeInfo.description,
+        description: item.volumeInfo.description
+          ? item.volumeInfo.description
+          : "no description available",
         imageSrc: img,
       };
       return newItem;

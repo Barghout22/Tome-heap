@@ -20,7 +20,7 @@ const checkForBook = async (id: string) => {
     where("id", "==", id)
   );
   const querySnapshot = await getDocs(q);
-  console.log(querySnapshot.docs[0].id);
+  // console.log(querySnapshot.docs[0].id);
   return querySnapshot.docs[0].id;
 };
 
@@ -56,7 +56,7 @@ const AddBookToUserListBtn = ({
         );
         const querySnapshot = await getDocs(q);
         const deleteBookID = querySnapshot.docs[0].id;
-        console.log(deleteBookID);
+        // console.log(deleteBookID);
         await deleteDoc(doc(getFirestore(), userBookCluster, deleteBookID));
         setBookPresentInUserList(false);
       }

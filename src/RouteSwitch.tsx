@@ -126,7 +126,14 @@ const RouteSwitch = () => {
         />
         <Route
           path="/ProfileBookListDisplay"
-          element={<ProfileBookDisp userID={userID} />}
+          element={
+            <ProfileBookDisp
+              userID={userID}
+              userSignInStatus={userSignInStatus}
+              setBookData={setBookData}
+              setLogInStatus={setLogInStatus}
+            />
+          }
         />
       </Routes>
     </BrowserRouter>
