@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getAuth, updateProfile } from "firebase/auth";
 import {
   getStorage,
@@ -7,13 +7,39 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  setDoc,
+  getDoc,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import stockImage from "../image_resources/userDefaultImage.png";
 
 const ProfileView = ({ viewOwnProfile }: { viewOwnProfile: boolean }) => {
+  useEffect(() => {
+    const docRef = doc(
+      getFirestore(),
+      "usersAbout",
+      `user-${getAuth().currentUser?.uid}`
+    );
+    const docSnap = getDoc(docRef).then((about) => {
+      if (about.data()) {
+        setUserAbout(about.data()!.about);
+      }
+    });
+  }, []);
   const user = getAuth().currentUser;
   const userImage = user!.photoURL ? user!.photoURL : stockImage;
   const [editState, setEditState] = useState(false);
   const [updateStatus, setUpdateStatus] = useState(false);
+  const [userAbout, setUserAbout] = useState(" ");
+  const [userAboutPlaceHolder, upDateUserAboutPlaceHolder] = useState(" ");
 
   const uploadUserProfilePic = async (file: File) => {
     const filePath = `${getAuth().currentUser!.uid}/ProfileImage`;
@@ -31,9 +57,23 @@ const ProfileView = ({ viewOwnProfile }: { viewOwnProfile: boolean }) => {
       });
   };
 
+  const updatePersonalInfo = async (about: string) => {
+    await setDoc(
+      doc(getFirestore(), "usersAbout", `user-${getAuth().currentUser?.uid}`),
+      { about: about }
+    );
+  };
+
   const updateProfilePic = (e: any) => {
     e.preventDefault();
     uploadUserProfilePic(e.target.files[0]);
+  };
+  const handleUpdates = () => {
+    setEditState(false);
+    if (userAboutPlaceHolder !== " " && userAboutPlaceHolder !== userAbout) {
+      updatePersonalInfo(userAboutPlaceHolder);
+      setUserAbout(userAboutPlaceHolder);
+    }
   };
   return (
     <>
@@ -75,8 +115,20 @@ const ProfileView = ({ viewOwnProfile }: { viewOwnProfile: boolean }) => {
 
         <div>
           <h2>username:{user!.displayName}</h2>
-          <p>about:</p>
-          {/* <textarea name="" id="" cols=30" rows="10"/> */}
+          <p>about: {!editState ? userAbout : null}</p>
+          {editState && (
+            <textarea
+              className="border-2 border-white bg-gray-800 text-white font-Lobster"
+              id="story"
+              name="story"
+              rows={5}
+              cols={33}
+              onChange={(e) => {
+                upDateUserAboutPlaceHolder(e.target.value);
+              }}
+              defaultValue={userAbout}
+            ></textarea>
+          )}
           {viewOwnProfile && !editState && (
             <button
               className="bg-white rounded-full h-11 mt-14 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
@@ -88,7 +140,7 @@ const ProfileView = ({ viewOwnProfile }: { viewOwnProfile: boolean }) => {
           {viewOwnProfile && editState && (
             <button
               className="bg-white rounded-full h-11 mt-14 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
-              onClick={() => setEditState(false)}
+              onClick={handleUpdates}
             >
               Save information
             </button>

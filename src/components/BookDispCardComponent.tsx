@@ -59,7 +59,7 @@ const BookDispCardComponent = ({
   };
 
   return (
-    <div key={book.id} className="flex p-4 w-96 h-96 shadow-lg">
+    <div className="flex p-4 w-96 h-96 shadow-lg">
       <img src={book.imageSrc} alt="" className="h-32" />
       <div className=" flex flex-col m-4 justify-between">
         <div>

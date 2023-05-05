@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import placeholderImg from "../image_resources/placeholderThumbnail.png";
 import BookDispCardComponent from "./BookDispCardComponent";
+import uniqid from "uniqid";
 
 export type BookInfo = {
   id: string;
@@ -15,13 +16,16 @@ export type BookInfo = {
 async function reqInfo(
   srchWrd: string,
   srchType: string,
-  noOfSearches: number
+  noOfSearches: number,
+  setTotalItems: Function
 ) {
   let srchPhr = " ";
   if (srchType === "book") {
     srchPhr = srchWrd;
   } else if (srchType === "category") {
     srchPhr = `subject:${srchWrd}`;
+  } else if (srchType === "author") {
+    srchPhr = `inauthor:${srchWrd}`;
   }
   let url =
     noOfSearches > 0
@@ -30,8 +34,10 @@ async function reqInfo(
   const data = await fetch(url);
   const decodeData = data.json();
   const moreDecode = await decodeData;
-  // console.log(moreDecode);
+  setTotalItems(moreDecode.totalItems);
   const DecodeItemsList = moreDecode.items;
+
+  //console.log(DecodeItemsList.totalItems);
   // console.log(DecodeItemsList);
   const adjustVals = DecodeItemsList.map(
     (item: {
@@ -72,12 +78,14 @@ const BookListView = ({
   setBookData,
   userSignInStatus,
   setLogInStatus,
+  setSearchType,
 }: {
   searchTerm: string;
   searchType: string;
   userSignInStatus: boolean;
   setBookData: Function;
   setLogInStatus: Function;
+  setSearchType: Function;
 }) => {
   const [displayBookList, setdisplaydBookList] = useState<BookInfo[]>([
     {
@@ -90,34 +98,69 @@ const BookListView = ({
     },
   ]);
   const [noOfSearches, setNoOfSearches] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
 
   useEffect(() => {
-    reqInfo(searchTerm, searchType, noOfSearches).then((items) => {
-      setdisplaydBookList(items);
-      // console.log(displayBookList);
-    });
-  }, []);
+    reqInfo(searchTerm, searchType, noOfSearches, setTotalItems).then(
+      (items) => {
+        setdisplaydBookList(items);
+        // console.log(displayBookList);
+      }
+    );
+  }, [searchType]);
 
   const getMoreResults = () => {
     let searchVal = noOfSearches + 11;
     // console.log("searchvalue", searchVal);
-    setNoOfSearches(searchVal);
-    reqInfo(searchTerm, searchType, searchVal).then((items) => {
+
+    reqInfo(searchTerm, searchType, searchVal, setTotalItems).then((items) => {
       let bookInfoHolder: BookInfo[] = displayBookList
         ? [...displayBookList, ...items]
         : items;
-      // console.log("noOfSearches", noOfSearches);
-      // console.log("bookInfoHolder", bookInfoHolder);
+      setNoOfSearches(bookInfoHolder.length);
       setdisplaydBookList(bookInfoHolder);
     });
   };
   return (
     <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-14">
-      <h1 className="text-3xl underline underline-offset-8">
-        displaying results for:{" "}
-        <span className="font-semibold">{searchTerm}</span>
-      </h1>
-
+      {searchType !== "category" && (
+        <ul className="text-3xl flex border-white border-b-2 justify-around w-screen">
+          <li
+            className={
+              searchType === "book"
+                ? "text-white "
+                : " text-gray-300 cursor-pointer"
+            }
+            onClick={() => {
+              if (searchType !== "book") {
+                setSearchType("book");
+              }
+            }}
+          >
+            Books
+          </li>
+          <li
+            className={
+              searchType === "author"
+                ? "text-white "
+                : " text-gray-300 cursor-pointer"
+            }
+            onClick={() => {
+              if (searchType !== "author") {
+                setSearchType("author");
+              }
+            }}
+          >
+            authors
+          </li>
+        </ul>
+      )}
+      {totalItems > 0 && (
+        <p className="text-2xl mt-4 ml-4">
+          displaying {noOfSearches + 10} out of {totalItems} total results for{" "}
+          {searchType}: <span className="font-semibold">{searchTerm}</span>
+        </p>
+      )}
       {displayBookList.length > 1 && (
         <div className="bg-gray-800 w-screen  flex p-10  flex-wrap gap-6 text-white font-Lobster">
           {displayBookList.map((item) => (
@@ -126,6 +169,7 @@ const BookListView = ({
               setBookData={setBookData}
               userSignInStatus={userSignInStatus}
               setLogInStatus={setLogInStatus}
+              key={item.id}
             />
           ))}
         </div>

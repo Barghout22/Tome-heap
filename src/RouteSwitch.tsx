@@ -106,6 +106,7 @@ const RouteSwitch = () => {
               setBookData={setBookData}
               userSignInStatus={userSignInStatus}
               setLogInStatus={setLogInStatus}
+              setSearchType={setSearchType}
             />
           }
         />
