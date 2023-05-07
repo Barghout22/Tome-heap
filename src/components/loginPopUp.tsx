@@ -21,7 +21,9 @@ const LogInPopUp = ({
   setUserSignInStatus: Function;
 }) => {
   const signUp = status === "sign up" ? true : false;
-  const [userName, setUserName] = useState(" ");
+  const [userFirstName, setUserFirstName] = useState(" ");
+  const [userLastName, setUserLastName] = useState(" ");
+
   const [email, setEmail] = useState(" ");
   const [password, setPassword] = useState(" ");
   const [errorStatus, setErrorStatus] = useState(" ");
@@ -78,16 +80,14 @@ const LogInPopUp = ({
     }
   }
 
-  function handleSignInLogIn() {
+  function handleSignInLogIn(e: any) {
+    e.preventDefault();
     let errorState = false;
-    if (email !== " " && password !== " ") {
-      if (signUp) {
-        if (userName !== " ") {
-          createUserWithEmail(email, password, userName);
-        }
-      } else {
-        signInWithEmail(email, password);
-      }
+    if (signUp) {
+      let userName = `${userFirstName} ${userLastName}`;
+      createUserWithEmail(email, password, userName);
+    } else {
+      signInWithEmail(email, password);
     }
   }
 
@@ -119,45 +119,60 @@ const LogInPopUp = ({
             "sign up successful. Please sign in to contiune"
           </p>
         )}
-        {signUp && (
+        <form action="" onSubmit={handleSignInLogIn}>
+          {signUp && (
+            <div>
+              <input
+                required
+                type="text"
+                name="userName"
+                placeholder=" first name"
+                className="border-gray-500 border-2 border-solid w-1/2 h-9 focus:outline-none focus:ring focus:ring-blue-600 rounded-md"
+                onChange={(e) => {
+                  setUserFirstName(e.target.value);
+                }}
+              />
+              <input
+                required
+                type="text"
+                name="lastName"
+                placeholder=" last name"
+                className="border-gray-500 border-2 border-solid w-1/2 h-9 focus:outline-none focus:ring focus:ring-blue-600 rounded-md"
+                onChange={(e) => {
+                  setUserLastName(e.target.value);
+                }}
+              />
+            </div>
+          )}
           <input
+            type="email"
+            name="email"
             required
-            type="text"
-            name="userName"
-            placeholder="enter your name"
-            className="border-gray-500 border-2 border-solid  h-9 focus:outline-none focus:ring focus:ring-blue-600 rounded-md"
+            placeholder=" e-mail"
+            className="border-gray-500 border-2 border-solid w-full h-9 focus:outline-none focus:ring focus:ring-blue-600 rounded-md"
             onChange={(e) => {
-              setUserName(e.target.value);
+              setEmail(e.target.value);
             }}
           />
-        )}
-        <input
-          type="text"
-          name="email"
-          placeholder="enter your e-mail"
-          className="border-gray-500 border-2 border-solid h-9 focus:outline-none focus:ring focus:ring-blue-600 rounded-md"
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-        />
-        <input
-          type="password"
-          name="psswrd"
-          placeholder=" enter your password"
-          className="border-gray-500 border-2 border-solid h-9 focus:outline-none focus:ring focus:ring-blue-600 rounded-md"
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-        />
-
+          <input
+            type="password"
+            name="psswrd"
+            required
+            placeholder=" enter your password"
+            className="border-gray-500 border-2 border-solid  w-full h-9 focus:outline-none focus:ring focus:ring-blue-600 rounded-md"
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+          />
+          <button
+            className="bg-black text-white w-full h-9 hover:bg-gray-800 "
+            type="submit"
+          >
+            {status}
+          </button>
+        </form>
         <button
-          className="bg-black text-white w-10/12 h-9 hover:bg-gray-800 "
-          onClick={handleSignInLogIn}
-        >
-          {status}
-        </button>
-        <button
-          className="bg-amber-500 text-white w-10/12 h-9 hover:bg-amber-400 "
+          className="bg-amber-500 text-white w-full h-9 hover:bg-amber-400 "
           onClick={signInWithGoogle}
         >
           {status} with google

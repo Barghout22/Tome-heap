@@ -40,7 +40,7 @@ function App({
         <input
           type="text"
           name=""
-          placeholder="search for a book"
+          placeholder="search for a book or author"
           className="w-48 sm:w-auto px-5 rounded-l-md transition-all origin-right focus:scale-x-110"
           onChange={(e) => {
             setSrchTrmPlcHldr(e.target.value);

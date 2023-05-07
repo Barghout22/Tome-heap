@@ -21,14 +21,20 @@ import {
 } from "firebase/firestore";
 import stockImage from "../image_resources/userDefaultImage.png";
 
-const ProfileView = ({ viewOwnProfile }: { viewOwnProfile: boolean }) => {
+const ProfileView = ({
+  viewOwnProfile,
+  viewedProfileID,
+}: {
+  viewOwnProfile: boolean;
+  viewedProfileID: string;
+}) => {
   useEffect(() => {
     const docRef = doc(
       getFirestore(),
       "usersAbout",
       `user-${getAuth().currentUser?.uid}`
     );
-    const docSnap = getDoc(docRef).then((about) => {
+    getDoc(docRef).then((about) => {
       if (about.data()) {
         setUserAbout(about.data()!.about);
       }

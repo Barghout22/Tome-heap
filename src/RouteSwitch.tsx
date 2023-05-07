@@ -47,8 +47,10 @@ const RouteSwitch = () => {
   const [searchTerm, setSearchTerm] = useState<string>(" ");
   const [searchType, setSearchType] = useState("book");
   const [dispUserShrtcutMenu, setDispUserShrtcutMenu] = useState(false);
-  const [viewOwnProfile, setViewOwnProfile] = useState(true);
+  const [viewOwnProfile, setViewOwnProfile] = useState(false);
   const [userID, setUserID] = useState("none");
+  const [viewedProfileID, setViewedProfileID] = useState(" ");
+
   const [bookData, setBookData] = useState<BookInfo>({
     id: " ",
     bookName: " ",
@@ -95,7 +97,12 @@ const RouteSwitch = () => {
         />
         <Route
           path="/profile"
-          element={<ProfileView viewOwnProfile={viewOwnProfile} />}
+          element={
+            <ProfileView
+              viewOwnProfile={viewOwnProfile}
+              viewedProfileID={viewedProfileID}
+            />
+          }
         />
         <Route
           path="/bookListDisplay"
