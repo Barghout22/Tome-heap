@@ -36,6 +36,25 @@ const LogInPopUp = ({
     setLogInStatus("none");
   }
 
+  const handleErrors = (message: string) => {
+    setErrorStatus("error");
+    switch (message) {
+      case "Firebase: Error (auth/email-already-in-use).":
+        setErrorMessage("email already in use");
+        break;
+      case "Firebase: Error (auth/user-not-found).":
+        setErrorMessage("user not found");
+        break;
+      case "Firebase: Error (auth/wrong-password).":
+        setErrorMessage("wrong email or password");
+        break;
+    }
+    setTimeout(() => {
+      setErrorStatus(" ");
+      setErrorMessage(" ");
+    }, 2000);
+  };
+
   async function createUserWithEmail(
     email: string,
     pwd: string,
@@ -53,13 +72,7 @@ const LogInPopUp = ({
         }, 2000);
       });
     } catch (e: any) {
-      // console.log(e.message);
-      setErrorStatus("error");
-      setErrorMessage(e.message);
-      setTimeout(() => {
-        setErrorStatus(" ");
-        setErrorMessage(" ");
-      }, 2000);
+      handleErrors(e.message);
     }
   }
   async function signInWithEmail(email: string, pwd: string) {
@@ -70,13 +83,7 @@ const LogInPopUp = ({
         setUserSignInStatus(true);
       });
     } catch (e: any) {
-      // console.log(e.message);
-      setErrorStatus("error");
-      setErrorMessage(e.message);
-      setTimeout(() => {
-        setErrorStatus(" ");
-        setErrorMessage(" ");
-      }, 2000);
+      handleErrors(e.message);
     }
   }
 
