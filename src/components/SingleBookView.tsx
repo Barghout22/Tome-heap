@@ -33,6 +33,8 @@ const SingleBookView = ({
   setLogInStatus: Function;
 }) => {
   const [bookPresentInUserList, setBookPresentInUserList] = useState(false);
+  const [bookStarRating, setBookStarRating] = useState(0);
+  const [bookReview, setBookReview] = useState(" ");
   useEffect(() => {
     if (userSignInStatus) {
       checkForBook(bookData.id).then((value) => {
@@ -40,6 +42,21 @@ const SingleBookView = ({
       });
     }
   }, []);
+  const handleRatingInput = (e: any) => {
+    if (userSignInStatus) {
+      console.log(e.target.value);
+    } else {
+      setLogInStatus("sign up");
+    }
+  };
+  const handleReviewInput = (e: any) => {
+    e.preventDefault();
+    if (userSignInStatus) {
+      console.log(e.target.value);
+    } else {
+      setLogInStatus("sign up");
+    }
+  };
   return (
     <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-20  pl-14">
       <div className="flex ">
@@ -58,6 +75,79 @@ const SingleBookView = ({
           />
         </div>
       </div>
+      <p className="text-2xl font-semibold ml-4 mt-5">
+        rate this book from 1 to 5 stars
+      </p>
+      <span className="flex w-1/2 justify-around">
+        <label>
+          <input
+            type="radio"
+            name="book-rating"
+            value="1"
+            onClick={handleRatingInput}
+          />
+          1 star
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="book-rating"
+            value="2"
+            onClick={handleRatingInput}
+          />
+          2 stars
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="book-rating"
+            value="3"
+            onClick={handleRatingInput}
+          />
+          3 stars
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="book-rating"
+            value="4"
+            onClick={handleRatingInput}
+          />
+          4 stars
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="book-rating"
+            value="5"
+            onClick={handleRatingInput}
+          />
+          5 stars
+        </label>
+      </span>
+
+      {userSignInStatus && (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            console.log("review is being processed");
+          }}
+          className="flex flex-col w-2/3 mt-12"
+        >
+          <textarea
+            cols={30}
+            rows={10}
+            className="border-2 border-white bg-gray-800 text-white font-Lobster text-2xl p-4"
+            placeholder="write a review about this book"
+          ></textarea>
+          <button
+            type="submit"
+            className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
+          >
+            add review
+          </button>
+        </form>
+      )}
     </div>
   );
 };
