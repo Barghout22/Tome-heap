@@ -26,44 +26,25 @@ const checkForBook = async (id: string) => {
   querySnapshot.docs.length > 0 ? (returnVal = true) : (returnVal = false);
   return returnVal;
 };
-const checkForReviews = async (
-  bookId: string,
-  setPreviousBookReviews: Function,
-  setUserHasRviewd: Function
-) => {
+const checkForReviews = async (bookId: string) => {
   const BookReviewCluster = `book-${bookId}-reviews`;
   const q = query(collection(getFirestore(), BookReviewCluster));
-  let reviewListPLaceHolder: any[] = [];
-  await getDocs(q).then((results) => {
-    const resultHolder = results.docs;
-    resultHolder.forEach((review) => {
-      let infoHolderObj = {
-        userId: review.data().userId,
-        bookId: review.data().bookId,
-        rating: review.data().rating,
-        review: review.data().review,
-        timeStamp: review.data().timeStamp,
-      };
-      getAuth().currentUser?.uid === review.data().userId
-        ? setUserHasRviewd(true)
-        : null;
-
-      console.log(getFirestore());
-      reviewListPLaceHolder.push(infoHolderObj);
-    });
-    console.log(reviewListPLaceHolder);
-    setPreviousBookReviews(reviewListPLaceHolder);
-    return reviewListPLaceHolder;
-  });
+  const results = await getDocs(q);
+  return results;
 };
 
 const addReview = async (
+  username: string,
+
   userId: string,
   rating: number,
   bookId: string,
+  photoURL?: string,
   review?: string
 ) => {
   const reviewDoc = {
+    username: username,
+    photoURL: photoURL || profileImagePlaceHolder,
     userId: userId,
     bookId: bookId,
     rating: rating,
@@ -110,7 +91,29 @@ const SingleBookView = ({
         setBookPresentInUserList(value);
       });
     }
-    checkForReviews(bookData.id, setPreviousBookReviews, setUserHasRviewd);
+    let reviewListPLaceHolder: any[] = [];
+    checkForReviews(bookData.id).then((results) => {
+      let ratingPlaceHolder = 0;
+      results.docs.forEach((value) => {
+        let infoHolderObj = {
+          username: value.data().username,
+          photoUrl: value.data().photoURL,
+          userId: value.data().userId,
+          bookId: value.data().bookId,
+          rating: value.data().rating,
+          review: value.data().review,
+          timeStamp: value.data().timeStamp,
+        };
+        getAuth().currentUser?.uid === value.data().userId
+          ? setUserHasRviewd(true)
+          : null;
+        ratingPlaceHolder += value.data().rating;
+        reviewListPLaceHolder.push(infoHolderObj);
+      });
+      ratingPlaceHolder /= reviewListPLaceHolder.length;
+      setAverageRating(ratingPlaceHolder);
+      setPreviousBookReviews(reviewListPLaceHolder);
+    });
   }, []);
   const handleRatingInput = (e: any) => {
     if (userSignInStatus) {
@@ -124,9 +127,11 @@ const SingleBookView = ({
     e.preventDefault();
     if (userSignInStatus) {
       addReview(
+        getAuth().currentUser!.displayName!,
         getAuth().currentUser!.uid,
         bookStarRating,
         bookData.id,
+        getAuth().currentUser!.photoURL || undefined,
         bookReview !== " " ? bookReview : undefined
       );
     } else {
@@ -145,9 +150,8 @@ const SingleBookView = ({
           <p>
             current average rating:{" "}
             {averageRating > 0
-              ? `${averageRating} stars`
+              ? `${averageRating} stars (${previousBookReviews.length} review(s))`
               : "no ratings on this book"}
-            stars
           </p>
           <AddBookToUserListBtn
             userSignInStatus={userSignInStatus}
