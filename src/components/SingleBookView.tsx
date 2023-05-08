@@ -75,6 +75,7 @@ const SingleBookView = ({
   const [bookStarRating, setBookStarRating] = useState(0);
   const [bookReview, setBookReview] = useState(" ");
   const [userHasRviewd, setUserHasRviewd] = useState(false);
+  const [editReviewStatus, setEditReviewStatus] = useState(false);
   const [previousBookReviews, setPreviousBookReviews] = useState([
     {
       userName: " ",
@@ -95,18 +96,22 @@ const SingleBookView = ({
     checkForReviews(bookData.id).then((results) => {
       let ratingPlaceHolder = 0;
       results.docs.forEach((value) => {
+        let time = value.data().timestamp;
         let infoHolderObj = {
-          username: value.data().username,
-          photoUrl: value.data().photoURL,
+          userName: value.data().username,
+          profilePicSource: value.data().photoURL,
           userId: value.data().userId,
           bookId: value.data().bookId,
           rating: value.data().rating,
           review: value.data().review,
-          timeStamp: value.data().timeStamp,
+          timeStamp: new Date(time.seconds * 1000 + time.nanoseconds / 1000000),
         };
-        getAuth().currentUser?.uid === value.data().userId
-          ? setUserHasRviewd(true)
-          : null;
+        if (getAuth().currentUser?.uid === value.data().userId) {
+          setUserHasRviewd(true);
+          setBookReview(value.data().review);
+          setBookStarRating(value.data().rating);
+        }
+
         ratingPlaceHolder += value.data().rating;
         reviewListPLaceHolder.push(infoHolderObj);
       });
@@ -114,10 +119,10 @@ const SingleBookView = ({
       setAverageRating(ratingPlaceHolder);
       setPreviousBookReviews(reviewListPLaceHolder);
     });
-  }, []);
+  }, [editReviewStatus]);
   const handleRatingInput = (e: any) => {
     if (userSignInStatus) {
-      console.log(e.target.value);
+      //console.log(e.target.value);
       setBookStarRating(e.target.value);
     } else {
       setLogInStatus("sign up");
@@ -125,7 +130,7 @@ const SingleBookView = ({
   };
   const handleReviewInput = (e: any) => {
     e.preventDefault();
-    if (userSignInStatus) {
+    if (userSignInStatus && bookStarRating !== 0) {
       addReview(
         getAuth().currentUser!.displayName!,
         getAuth().currentUser!.uid,
@@ -134,6 +139,7 @@ const SingleBookView = ({
         getAuth().currentUser!.photoURL || undefined,
         bookReview !== " " ? bookReview : undefined
       );
+      setEditReviewStatus(false);
     } else {
       setLogInStatus("sign up");
     }
@@ -163,7 +169,7 @@ const SingleBookView = ({
         </div>
       </div>
 
-      {userSignInStatus && (
+      {userSignInStatus && (!userHasRviewd || editReviewStatus) && (
         <form
           onSubmit={handleReviewInput}
           className="flex flex-col w-2/3 mt-12"
@@ -178,6 +184,7 @@ const SingleBookView = ({
                 name="book-rating"
                 value="1"
                 required
+                defaultChecked={bookStarRating === 1}
                 onClick={handleRatingInput}
               />
               1 star
@@ -187,6 +194,7 @@ const SingleBookView = ({
                 type="radio"
                 name="book-rating"
                 value="2"
+                defaultChecked={bookStarRating === 2}
                 onClick={handleRatingInput}
               />
               2 stars
@@ -196,6 +204,7 @@ const SingleBookView = ({
                 type="radio"
                 name="book-rating"
                 value="3"
+                defaultChecked={bookStarRating === 3}
                 onClick={handleRatingInput}
               />
               3 stars
@@ -205,6 +214,7 @@ const SingleBookView = ({
                 type="radio"
                 name="book-rating"
                 value="4"
+                defaultChecked={bookStarRating === 4}
                 onClick={handleRatingInput}
               />
               4 stars
@@ -213,6 +223,7 @@ const SingleBookView = ({
               <input
                 type="radio"
                 name="book-rating"
+                defaultChecked={bookStarRating === 5}
                 value="5"
                 onClick={handleRatingInput}
               />
@@ -224,8 +235,9 @@ const SingleBookView = ({
             cols={30}
             rows={10}
             className="border-2 border-white bg-gray-800 text-white font-Lobster text-2xl p-4"
-            placeholder="write a review about this book"
+            defaultValue={bookReview}
             onChange={(e) => {
+              console.log(e.target.value);
               setBookReview(e.target.value);
             }}
           ></textarea>
@@ -233,12 +245,48 @@ const SingleBookView = ({
             type="submit"
             className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
           >
-            add review
+            Save review
           </button>
         </form>
       )}
+      {previousBookReviews.length > 0 ? (
+        <div>
+          <h1>reviews:</h1>
+          {previousBookReviews.map((review) => {
+            const isThisCurrentUser =
+              getAuth().currentUser?.uid === review.userId;
+            const editableReview = isThisCurrentUser ? !editReviewStatus : true;
+            console.log(review.userName);
+            console.log(review.profilePicSource);
+            return (
+              <div
+                className={editableReview ? "text-white text-2xl" : "hidden"}
+                key={review.userId}
+              >
+                <img className="w-20" src={review.profilePicSource} alt="" />
+                <h2>{review.userName}</h2>
+                <h2>{review.timeStamp.toString()}</h2>
+                <p>{review.rating} stars</p>
+                <p>{review.review}</p>
+                {isThisCurrentUser && (
+                  <button
+                    className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
+                    onClick={() => {
+                      setEditReviewStatus(true);
+                    }}
+                  >
+                    edit review
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
     </div>
   );
 };
 
 export default SingleBookView;
+
+//
