@@ -40,6 +40,8 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+export const userDefaultImage =
+  "https://firebasestorage.googleapis.com/v0/b/tome-heap.appspot.com/o/userDefaultImage.png?alt=media&token=ae155369-f1fc-4c82-93fc-12f489301aa7";
 
 const RouteSwitch = () => {
   const [userSignInStatus, setUserSignInStatus] = useState(false);
@@ -47,8 +49,8 @@ const RouteSwitch = () => {
   const [searchTerm, setSearchTerm] = useState<string>(" ");
   const [searchType, setSearchType] = useState("book");
   const [dispUserShrtcutMenu, setDispUserShrtcutMenu] = useState(false);
-  const [viewOwnProfile, setViewOwnProfile] = useState(false);
   const [userID, setUserID] = useState("none");
+  const [viewOwnProfile, setViewOwnProfile] = useState(false);
   const [viewedProfileID, setViewedProfileID] = useState(" ");
 
   const [bookData, setBookData] = useState<BookInfo>({
@@ -125,6 +127,8 @@ const RouteSwitch = () => {
               bookData={bookData}
               userSignInStatus={userSignInStatus}
               setLogInStatus={setLogInStatus}
+              setViewOwnProfile={setViewOwnProfile}
+              setViewedProfileID={setViewedProfileID}
             />
           }
         />

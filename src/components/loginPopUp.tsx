@@ -44,7 +44,10 @@ const LogInPopUp = ({
     }
     await setDoc(
       doc(getFirestore(), "usersData", `user-${getAuth().currentUser?.uid}`),
-      { username: `${getAuth().currentUser?.displayName}` },
+      {
+        username: `${getAuth().currentUser?.displayName}`,
+        userID: `${getAuth().currentUser?.uid}`,
+      },
       { merge: true }
     );
   }
@@ -60,6 +63,12 @@ const LogInPopUp = ({
         break;
       case "Firebase: Error (auth/wrong-password).":
         setErrorMessage("wrong email or password");
+        break;
+      case "Firebase: Error (auth/invalid-email).":
+        setErrorMessage("you've entered an invalid email");
+        break;
+      default:
+        console.log(message);
         break;
     }
     setTimeout(() => {
@@ -82,9 +91,13 @@ const LogInPopUp = ({
             "usersData",
             `user-${getAuth().currentUser?.uid}`
           ),
-          { username: `${getAuth().currentUser?.displayName}` },
+          {
+            username: userName,
+            userID: `${getAuth().currentUser?.uid}`,
+          },
           { merge: true }
         );
+
         signOut(auth);
         setErrorStatus("no error");
         setLogInStatus("log in");

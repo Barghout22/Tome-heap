@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { BookInfo } from "./BookListView";
 import profileImagePlaceHolder from "../image_resources/userDefaultImage.png";
 import {
@@ -74,16 +75,21 @@ const SingleBookView = ({
   bookData,
   userSignInStatus,
   setLogInStatus,
+  setViewOwnProfile,
+  setViewedProfileID,
 }: {
   bookData: BookInfo;
   userSignInStatus: boolean;
   setLogInStatus: Function;
+  setViewOwnProfile: Function;
+  setViewedProfileID: Function;
 }) => {
+  const navigate = useNavigate();
   const [bookPresentInUserList, setBookPresentInUserList] = useState(false);
   const [averageRating, setAverageRating] = useState(0);
   const [bookStarRating, setBookStarRating] = useState(0);
   const [bookReview, setBookReview] = useState(" ");
-  const [userHasRviewd, setUserHasRviewd] = useState(false);
+  const [userHasRviewd, setUserHasRviewd] = useState(true);
   const [editReviewStatus, setEditReviewStatus] = useState(false);
   const [previousBookReviews, setPreviousBookReviews] = useState([
     {
@@ -119,7 +125,6 @@ const SingleBookView = ({
           ).toLocaleString(),
         };
         if (getAuth().currentUser?.uid === value.data().userId) {
-          setUserHasRviewd(true);
           setBookReview(value.data().review);
           setBookStarRating(value.data().rating);
           userReviewPlaceHolder = infoHolderObj;
@@ -130,16 +135,15 @@ const SingleBookView = ({
             reviewListPLaceHolder.push(infoHolderObj);
           }
         }
-        ratingPlaceHolder += value.data().rating * 1;
+        ratingPlaceHolder += Number(value.data().rating);
       });
 
+      userReviewPlaceHolder
+        ? reviewListPLaceHolder.unshift(userReviewPlaceHolder)
+        : setUserHasRviewd(false);
       ratingPlaceHolder /= reviewListPLaceHolder.length;
       ratingPlaceHolder = Number(ratingPlaceHolder.toFixed(2));
       setAverageRating(ratingPlaceHolder);
-      userReviewPlaceHolder
-        ? reviewListPLaceHolder.unshift(userReviewPlaceHolder)
-        : null;
-
       setPreviousBookReviews(reviewListPLaceHolder);
     });
   }, [editReviewStatus]);
@@ -155,6 +159,7 @@ const SingleBookView = ({
     e.preventDefault();
     if (userSignInStatus && bookStarRating !== 0) {
       setEditReviewStatus(false);
+      setUserHasRviewd(true);
 
       addReview(
         getAuth().currentUser!.displayName!,
@@ -169,6 +174,17 @@ const SingleBookView = ({
     } else {
       setLogInStatus("sign up");
     }
+  };
+  const goToProfile = (userId: string) => {
+    if (getAuth().currentUser?.uid === userId) {
+      setViewOwnProfile(true);
+      setViewedProfileID("none");
+    } else {
+      setViewOwnProfile(false);
+      setViewedProfileID(userId);
+    }
+
+    navigate("/profile");
   };
   return (
     <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-20  pl-14">
@@ -284,8 +300,6 @@ const SingleBookView = ({
             const isThisCurrentUser =
               getAuth().currentUser?.uid === review.userId;
             const editableReview = isThisCurrentUser ? !editReviewStatus : true;
-            // console.log(review.userName);
-            // console.log(review.profilePicSource);
             return (
               <div
                 className={
@@ -296,7 +310,10 @@ const SingleBookView = ({
                 key={review.userId}
               >
                 <img className="w-20" src={review.profilePicSource} alt="" />
-                <h2 className="cursor-pointer hover:underline">
+                <h2
+                  className="cursor-pointer hover:underline"
+                  onClick={() => goToProfile(review.userId)}
+                >
                   {review.userName}
                 </h2>
                 <h2>{review.timeStamp}</h2>

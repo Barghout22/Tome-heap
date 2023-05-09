@@ -1,7 +1,7 @@
 import React from "react";
 import icon from "../image_resources/tome-heap-logo_thumbnail.ico";
 import arrow from "../image_resources/arrowDownIcon.png";
-import userThumbnail from "../image_resources/userDefaultImage.png";
+import { userDefaultImage } from "../RouteSwitch";
 import { useNavigate } from "react-router-dom";
 import {
   getAuth,
@@ -10,6 +10,7 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
+import RouteSwitch from "../RouteSwitch";
 
 const LoggedInHeader = ({
   setUserSignInStatus,
@@ -24,7 +25,7 @@ const LoggedInHeader = ({
     setUserSignInStatus(false);
   }
   const navigate = useNavigate();
-  const userImg = getAuth().currentUser?.photoURL || userThumbnail;
+  const userImg = getAuth().currentUser?.photoURL || userDefaultImage;
   const usrFrstNm = getAuth().currentUser?.displayName!.split(" ")[0];
   return (
     <div className="text-white absolute top-0 w-screen flex justify-between">

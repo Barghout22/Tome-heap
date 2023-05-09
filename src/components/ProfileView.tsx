@@ -19,8 +19,14 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
-import stockImage from "../image_resources/userDefaultImage.png";
+import { userDefaultImage } from "../RouteSwitch";
 
+type User = {
+  userID: string;
+  username: string;
+  profilePicture?: string;
+  about?: string;
+};
 const ProfileView = ({
   viewOwnProfile,
   viewedProfileID,
@@ -29,19 +35,34 @@ const ProfileView = ({
   viewedProfileID: string;
 }) => {
   useEffect(() => {
-    const docRef = doc(
-      getFirestore(),
-      "usersAbout",
-      `user-${getAuth().currentUser?.uid}`
-    );
-    getDoc(docRef).then((about) => {
-      if (about.data()) {
-        setUserAbout(about.data()!.about);
-      }
+    const dataDocName = viewOwnProfile
+      ? `user-${getAuth().currentUser?.uid}`
+      : `user-${viewedProfileID}`;
+    const docRef = doc(getFirestore(), "usersData", dataDocName);
+    getDoc(docRef).then((userData) => {
+      let userPlaceholder = {
+        userID: userData.data()!.userID,
+        username: userData.data()!.username,
+        profilePicture: userData.data()!.profilePicture
+          ? userData.data()!.profilePicture
+          : userDefaultImage,
+        about: userData.data()!.about ? userData.data()!.about : " ",
+      };
+
+      setCurrentUser(userPlaceholder);
+      setUserAbout(userPlaceholder.about);
+      setUserImage(userPlaceholder.profilePicture);
     });
   }, []);
-  const user = getAuth().currentUser;
-  const userImage = user!.photoURL ? user!.photoURL : stockImage;
+  const [currentUser, setCurrentUser] = useState<User>({
+    userID: " ",
+    username: " ",
+    profilePicture: " ",
+    about: " ",
+  });
+
+  const [userImage, setUserImage] = useState(" ");
+
   const [editState, setEditState] = useState(false);
   const [updateStatus, setUpdateStatus] = useState(false);
   const [userAbout, setUserAbout] = useState(" ");
@@ -130,7 +151,7 @@ const ProfileView = ({
         </div>
 
         <div>
-          <h2>username:{user!.displayName}</h2>
+          <h2>username:{currentUser!.username}</h2>
           <p>about: {!editState ? userAbout : null}</p>
           {editState && (
             <textarea
