@@ -102,6 +102,7 @@ const SingleBookView = ({
       });
     }
     let reviewListPLaceHolder: any[] = [];
+    let userReviewPlaceHolder: any;
     checkForReviews(bookData.id).then((results) => {
       let ratingPlaceHolder: number = 0;
       results.docs.forEach((value) => {
@@ -114,16 +115,20 @@ const SingleBookView = ({
           rating: value.data().rating,
           review: value.data().review,
           timeStamp: new Date(
-            time.seconds * 1000 + time.nanoseconds / 1000000
-          ).toDateString(),
+            time.seconds ? time.seconds * 1000 : 0 + time.nanoseconds / 1000000
+          ).toLocaleString(),
         };
         if (getAuth().currentUser?.uid === value.data().userId) {
           setUserHasRviewd(true);
           setBookReview(value.data().review);
           setBookStarRating(value.data().rating);
-          reviewListPLaceHolder.unshift(infoHolderObj);
+          userReviewPlaceHolder = infoHolderObj;
         } else {
-          reviewListPLaceHolder.push(infoHolderObj);
+          if (reviewListPLaceHolder.length > 0) {
+            reviewListPLaceHolder.splice(0, 0, infoHolderObj);
+          } else {
+            reviewListPLaceHolder.push(infoHolderObj);
+          }
         }
         ratingPlaceHolder += value.data().rating * 1;
       });
@@ -131,6 +136,10 @@ const SingleBookView = ({
       ratingPlaceHolder /= reviewListPLaceHolder.length;
       ratingPlaceHolder = Number(ratingPlaceHolder.toFixed(2));
       setAverageRating(ratingPlaceHolder);
+      userReviewPlaceHolder
+        ? reviewListPLaceHolder.unshift(userReviewPlaceHolder)
+        : null;
+
       setPreviousBookReviews(reviewListPLaceHolder);
     });
   }, [editReviewStatus]);
@@ -201,8 +210,8 @@ const SingleBookView = ({
                 name="book-rating"
                 value="1"
                 required
-                defaultChecked={bookStarRating === 1}
                 onChange={handleRatingInput}
+                defaultChecked={bookStarRating == 1 ? true : false}
               />
               1 star
             </label>
@@ -211,7 +220,7 @@ const SingleBookView = ({
                 type="radio"
                 name="book-rating"
                 value="2"
-                defaultChecked={bookStarRating === 2}
+                defaultChecked={bookStarRating == 2 ? true : false}
                 onChange={handleRatingInput}
               />
               2 stars
@@ -221,7 +230,7 @@ const SingleBookView = ({
                 type="radio"
                 name="book-rating"
                 value="3"
-                defaultChecked={bookStarRating === 3}
+                defaultChecked={bookStarRating == 3 ? true : false}
                 onChange={handleRatingInput}
               />
               3 stars
@@ -231,7 +240,7 @@ const SingleBookView = ({
                 type="radio"
                 name="book-rating"
                 value="4"
-                defaultChecked={bookStarRating === 4}
+                defaultChecked={bookStarRating == 4 ? true : false}
                 onChange={handleRatingInput}
               />
               4 stars
@@ -240,7 +249,7 @@ const SingleBookView = ({
               <input
                 type="radio"
                 name="book-rating"
-                defaultChecked={bookStarRating === 5}
+                defaultChecked={bookStarRating == 5 ? true : false}
                 value="5"
                 onChange={handleRatingInput}
               />

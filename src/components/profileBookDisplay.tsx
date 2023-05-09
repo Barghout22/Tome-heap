@@ -51,6 +51,7 @@ const ProfileBookDisp = ({
           <div className="bg-gray-800 w-screen  flex p-10  flex-wrap gap-6 text-white font-Lobster">
             {bookList.map((item) => (
               <BookDispCardComponent
+                key={item.id}
                 book={item}
                 setBookData={setBookData}
                 userSignInStatus={userSignInStatus}
@@ -67,4 +68,3 @@ const ProfileBookDisp = ({
 };
 
 export default ProfileBookDisp;
-
