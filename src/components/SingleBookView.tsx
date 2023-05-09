@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookInfo } from "./BookListView";
 import profileImagePlaceHolder from "../image_resources/userDefaultImage.png";
+import { userDefaultImage } from "../RouteSwitch";
 import {
   getFirestore,
   collection,
@@ -37,18 +38,17 @@ const checkForReviews = async (bookId: string) => {
 
 const addReview = async (
   username: string,
-
   userId: string,
   rating: number,
   bookId: string,
   bookPresentInUserList: boolean,
   bookData: BookInfo,
-  photoURL?: string,
+  photoURL: string,
   review?: string
 ) => {
   const reviewDoc = {
     username: username,
-    photoURL: photoURL || profileImagePlaceHolder,
+    photoURL: photoURL !== " " ? photoURL : userDefaultImage,
     userId: userId,
     bookId: bookId,
     rating: rating,
@@ -58,11 +58,11 @@ const addReview = async (
   await setDoc(
     doc(getFirestore(), `book-${bookId}-reviews`, `user-${userId}-review`),
     reviewDoc
-  );
+  ).catch((e) => console.log(e));
   await setDoc(
     doc(getFirestore(), `user-${userId}-reviews`, `book-${bookId}-review`),
     reviewDoc
-  );
+  ).catch((e) => console.log(e));
   if (!bookPresentInUserList) {
     await addDoc(
       collection(getFirestore(), `userBookList-${getAuth().currentUser?.uid}`),
@@ -112,7 +112,8 @@ const SingleBookView = ({
     checkForReviews(bookData.id).then((results) => {
       let ratingPlaceHolder: number = 0;
       results.docs.forEach((value) => {
-        let time = value.data().timestamp;
+        const time = value.data().timestamp;
+        const seconds = time.seconds ? time.seconds * 1000 : 0;
         let infoHolderObj = {
           userName: value.data().username,
           profilePicSource: value.data().photoURL,
@@ -121,7 +122,7 @@ const SingleBookView = ({
           rating: value.data().rating,
           review: value.data().review,
           timeStamp: new Date(
-            time.seconds ? time.seconds * 1000 : 0 + time.nanoseconds / 1000000
+            seconds + time.nanoseconds / 1000000
           ).toLocaleString(),
         };
         if (getAuth().currentUser?.uid === value.data().userId) {
@@ -146,18 +147,36 @@ const SingleBookView = ({
       setAverageRating(ratingPlaceHolder);
       setPreviousBookReviews(reviewListPLaceHolder);
     });
-  }, [editReviewStatus]);
+  }, []);
   const handleRatingInput = (e: any) => {
-    if (userSignInStatus) {
-      //console.log(e.target.value);
-      setBookStarRating(e.target.value);
-    } else {
-      setLogInStatus("sign up");
-    }
+    setBookStarRating(e.target.value);
   };
   const handleReviewInput = (e: any) => {
     e.preventDefault();
-    if (userSignInStatus && bookStarRating !== 0) {
+    if (bookStarRating !== 0) {
+      let reviewsPlaceHolder = previousBookReviews;
+      reviewsPlaceHolder.shift();
+      const currentDate = new Date().toLocaleString();
+      const newReview = {
+        userName: getAuth().currentUser!.displayName!,
+        profilePicSource:
+          getAuth().currentUser!.photoURL !== " "
+            ? getAuth().currentUser!.photoURL!
+            : userDefaultImage,
+        userId: getAuth().currentUser!.uid,
+        bookId: bookData.id,
+        rating: bookStarRating,
+        review: bookReview,
+        timeStamp: currentDate,
+      };
+      reviewsPlaceHolder.unshift(newReview);
+      setPreviousBookReviews(reviewsPlaceHolder);
+      let placeHolderAverageRating = 0;
+      reviewsPlaceHolder.forEach((review) => {
+        placeHolderAverageRating += Number(review.rating);
+      });
+      placeHolderAverageRating /= reviewsPlaceHolder.length;
+      setAverageRating(placeHolderAverageRating);
       setEditReviewStatus(false);
       setUserHasRviewd(true);
 
@@ -168,11 +187,9 @@ const SingleBookView = ({
         bookData.id,
         bookPresentInUserList,
         bookData,
-        getAuth().currentUser!.photoURL || undefined,
-        bookReview !== " " ? bookReview : undefined
+        getAuth().currentUser!.photoURL || " ",
+        bookReview !== " " ? bookReview : " "
       );
-    } else {
-      setLogInStatus("sign up");
     }
   };
   const goToProfile = (userId: string) => {
