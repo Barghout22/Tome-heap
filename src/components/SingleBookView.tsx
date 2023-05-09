@@ -7,6 +7,7 @@ import {
   collection,
   query,
   where,
+  addDoc,
   getDocs,
   setDoc,
   doc,
@@ -39,6 +40,8 @@ const addReview = async (
   userId: string,
   rating: number,
   bookId: string,
+  bookPresentInUserList:boolean,
+  bookData: BookInfo,
   photoURL?: string,
   review?: string
 ) => {
@@ -59,6 +62,12 @@ const addReview = async (
     doc(getFirestore(), `user-${userId}-reviews`, `book-${bookId}-review`),
     reviewDoc
   );
+  if (!bookPresentInUserList) {
+    await addDoc(
+      collection(getFirestore(), `userBookList-${getAuth().currentUser?.uid}`),
+      bookData
+    );
+  }
 };
 
 const SingleBookView = ({
@@ -104,7 +113,9 @@ const SingleBookView = ({
           bookId: value.data().bookId,
           rating: value.data().rating,
           review: value.data().review,
-          timeStamp: new Date(time.seconds * 1000 + time.nanoseconds / 1000000),
+          timeStamp: new Date(
+            time.seconds * 1000 + time.nanoseconds / 1000000
+          ).toDateString(),
         };
         if (getAuth().currentUser?.uid === value.data().userId) {
           setUserHasRviewd(true);
@@ -136,10 +147,12 @@ const SingleBookView = ({
         getAuth().currentUser!.uid,
         bookStarRating,
         bookData.id,
+        bookPresentInUserList,
+        bookData,
         getAuth().currentUser!.photoURL || undefined,
         bookReview !== " " ? bookReview : undefined
       );
-      setEditReviewStatus(false);
+      setEditReviewStatus(true);
     } else {
       setLogInStatus("sign up");
     }
@@ -237,7 +250,7 @@ const SingleBookView = ({
             className="border-2 border-white bg-gray-800 text-white font-Lobster text-2xl p-4"
             defaultValue={bookReview}
             onChange={(e) => {
-              console.log(e.target.value);
+              // console.log(e.target.value);
               setBookReview(e.target.value);
             }}
           ></textarea>
@@ -249,23 +262,27 @@ const SingleBookView = ({
           </button>
         </form>
       )}
-      {previousBookReviews.length > 0 ? (
-        <div>
-          <h1>reviews:</h1>
+      {!editReviewStatus && previousBookReviews.length > 0 && (
+        <div className="mt-12">
+          <h1 className="text-3xl font-bold underline underline-offset-2">
+            Reviews:
+          </h1>
           {previousBookReviews.map((review) => {
             const isThisCurrentUser =
               getAuth().currentUser?.uid === review.userId;
             const editableReview = isThisCurrentUser ? !editReviewStatus : true;
-            console.log(review.userName);
-            console.log(review.profilePicSource);
+            // console.log(review.userName);
+            // console.log(review.profilePicSource);
             return (
               <div
-                className={editableReview ? "text-white text-2xl" : "hidden"}
+                className={
+                  editableReview ? "text-white text-2xl ml-4 mt-4" : "hidden"
+                }
                 key={review.userId}
               >
                 <img className="w-20" src={review.profilePicSource} alt="" />
                 <h2>{review.userName}</h2>
-                <h2>{review.timeStamp.toString()}</h2>
+                <h2>{review.timeStamp}</h2>
                 <p>{review.rating} stars</p>
                 <p>{review.review}</p>
                 {isThisCurrentUser && (
@@ -282,7 +299,7 @@ const SingleBookView = ({
             );
           })}
         </div>
-      ) : null}
+      )}
     </div>
   );
 };
