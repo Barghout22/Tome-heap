@@ -40,7 +40,7 @@ const addReview = async (
   userId: string,
   rating: number,
   bookId: string,
-  bookPresentInUserList:boolean,
+  bookPresentInUserList: boolean,
   bookData: BookInfo,
   photoURL?: string,
   review?: string
@@ -103,7 +103,7 @@ const SingleBookView = ({
     }
     let reviewListPLaceHolder: any[] = [];
     checkForReviews(bookData.id).then((results) => {
-      let ratingPlaceHolder = 0;
+      let ratingPlaceHolder: number = 0;
       results.docs.forEach((value) => {
         let time = value.data().timestamp;
         let infoHolderObj = {
@@ -122,11 +122,12 @@ const SingleBookView = ({
           setBookReview(value.data().review);
           setBookStarRating(value.data().rating);
         }
-
-        ratingPlaceHolder += value.data().rating;
+        ratingPlaceHolder += value.data().rating * 1;
         reviewListPLaceHolder.push(infoHolderObj);
       });
+
       ratingPlaceHolder /= reviewListPLaceHolder.length;
+      ratingPlaceHolder = Number(ratingPlaceHolder.toFixed(2));
       setAverageRating(ratingPlaceHolder);
       setPreviousBookReviews(reviewListPLaceHolder);
     });
@@ -142,6 +143,8 @@ const SingleBookView = ({
   const handleReviewInput = (e: any) => {
     e.preventDefault();
     if (userSignInStatus && bookStarRating !== 0) {
+      setEditReviewStatus(false);
+
       addReview(
         getAuth().currentUser!.displayName!,
         getAuth().currentUser!.uid,
@@ -152,7 +155,6 @@ const SingleBookView = ({
         getAuth().currentUser!.photoURL || undefined,
         bookReview !== " " ? bookReview : undefined
       );
-      setEditReviewStatus(true);
     } else {
       setLogInStatus("sign up");
     }
@@ -197,7 +199,7 @@ const SingleBookView = ({
                 name="book-rating"
                 value="1"
                 required
-                defaultChecked={bookStarRating === 1}
+                {...bookStarRating === 1 ? checked : null}
                 onClick={handleRatingInput}
               />
               1 star
@@ -281,7 +283,9 @@ const SingleBookView = ({
                 key={review.userId}
               >
                 <img className="w-20" src={review.profilePicSource} alt="" />
-                <h2>{review.userName}</h2>
+                <h2 className="cursor-pointer hover:underline">
+                  {review.userName}
+                </h2>
                 <h2>{review.timeStamp}</h2>
                 <p>{review.rating} stars</p>
                 <p>{review.review}</p>
