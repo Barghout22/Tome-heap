@@ -121,9 +121,11 @@ const SingleBookView = ({
           setUserHasRviewd(true);
           setBookReview(value.data().review);
           setBookStarRating(value.data().rating);
+          reviewListPLaceHolder.unshift(infoHolderObj);
+        } else {
+          reviewListPLaceHolder.push(infoHolderObj);
         }
         ratingPlaceHolder += value.data().rating * 1;
-        reviewListPLaceHolder.push(infoHolderObj);
       });
 
       ratingPlaceHolder /= reviewListPLaceHolder.length;
@@ -278,7 +280,9 @@ const SingleBookView = ({
             return (
               <div
                 className={
-                  editableReview ? "text-white text-2xl ml-4 mt-4" : "hidden"
+                  editableReview
+                    ? "text-white text-2xl py-10 border-b-2"
+                    : "hidden"
                 }
                 key={review.userId}
               >

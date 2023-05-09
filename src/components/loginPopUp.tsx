@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import icon from "../image_resources/tome-heap-logo_thumbnail.ico";
 import ExitBtn from "../image_resources/exitBtn.webp";
+import { getFirestore, setDoc, doc } from "firebase/firestore";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -34,6 +35,13 @@ const LogInPopUp = ({
     await signInWithPopup(auth, provider);
     setUserSignInStatus(true);
     setLogInStatus("none");
+    if (getAuth().currentUser?.photoURL !== " ") {
+      await setDoc(
+        doc(getFirestore(), "usersData", `user-${getAuth().currentUser?.uid}`),
+        { profilePicture: `${getAuth().currentUser?.photoURL}` },
+        { merge: true }
+      );
+    }
   }
 
   const handleErrors = (message: string) => {
@@ -63,6 +71,15 @@ const LogInPopUp = ({
     try {
       await createUserWithEmailAndPassword(auth, email, pwd).then(() => {
         updateProfile(auth.currentUser!, { displayName: userName });
+        setDoc(
+          doc(
+            getFirestore(),
+            "usersData",
+            `user-${getAuth().currentUser?.uid}`
+          ),
+          { username: `${getAuth().currentUser?.displayName}` },
+          { merge: true }
+        );
         signOut(auth);
         setErrorStatus("no error");
         setLogInStatus("log in");
