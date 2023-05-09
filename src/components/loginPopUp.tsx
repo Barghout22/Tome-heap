@@ -42,6 +42,11 @@ const LogInPopUp = ({
         { merge: true }
       );
     }
+    await setDoc(
+      doc(getFirestore(), "usersData", `user-${getAuth().currentUser?.uid}`),
+      { username: `${getAuth().currentUser?.displayName}` },
+      { merge: true }
+    );
   }
 
   const handleErrors = (message: string) => {

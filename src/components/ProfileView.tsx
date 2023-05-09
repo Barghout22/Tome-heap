@@ -57,6 +57,15 @@ const ProfileView = ({
     })
       .then(() => {
         setUpdateStatus(true);
+        setDoc(
+          doc(
+            getFirestore(),
+            "usersData",
+            `user-${getAuth().currentUser?.uid}`
+          ),
+          { profilePicture: publicImageUrl },
+          { merge: true }
+        );
       })
       .catch((error) => {
         console.log(error);
