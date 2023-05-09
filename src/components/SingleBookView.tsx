@@ -155,7 +155,7 @@ const SingleBookView = ({
     e.preventDefault();
     if (bookStarRating !== 0) {
       let reviewsPlaceHolder = previousBookReviews;
-      reviewsPlaceHolder.shift();
+      userHasRviewd ? reviewsPlaceHolder.shift() : null;
       const currentDate = new Date().toLocaleString();
       const newReview = {
         userName: getAuth().currentUser!.displayName!,
