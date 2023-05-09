@@ -6,11 +6,13 @@ const ViewUsrShrtcuts = ({
   setUserSignInStatus,
   switchDispUserValue,
   setViewOwnProfile,
+  setViewedProfileID,
   setUserID,
 }: {
   setUserSignInStatus: Function;
   switchDispUserValue: Function;
   setViewOwnProfile: Function;
+  setViewedProfileID: Function;
   setUserID: Function;
 }) => {
   const navigate = useNavigate();
@@ -22,6 +24,7 @@ const ViewUsrShrtcuts = ({
   };
   const goToProfile = () => {
     setViewOwnProfile(true);
+    setViewedProfileID(" ");
     switchDispUserValue();
     navigate("/profile");
   };

@@ -65,8 +65,9 @@ const ProfileView = ({
 
   const updatePersonalInfo = async (about: string) => {
     await setDoc(
-      doc(getFirestore(), "usersAbout", `user-${getAuth().currentUser?.uid}`),
-      { about: about }
+      doc(getFirestore(), "usersData", `user-${getAuth().currentUser?.uid}`),
+      { username: `${getAuth().currentUser?.displayName}`, about: about },
+      { merge: true }
     );
   };
 

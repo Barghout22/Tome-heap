@@ -199,8 +199,8 @@ const SingleBookView = ({
                 name="book-rating"
                 value="1"
                 required
-                {...bookStarRating === 1 ? checked : null}
-                onClick={handleRatingInput}
+                defaultChecked={bookStarRating === 1}
+                onChange={handleRatingInput}
               />
               1 star
             </label>
@@ -210,7 +210,7 @@ const SingleBookView = ({
                 name="book-rating"
                 value="2"
                 defaultChecked={bookStarRating === 2}
-                onClick={handleRatingInput}
+                onChange={handleRatingInput}
               />
               2 stars
             </label>
@@ -220,7 +220,7 @@ const SingleBookView = ({
                 name="book-rating"
                 value="3"
                 defaultChecked={bookStarRating === 3}
-                onClick={handleRatingInput}
+                onChange={handleRatingInput}
               />
               3 stars
             </label>
@@ -230,7 +230,7 @@ const SingleBookView = ({
                 name="book-rating"
                 value="4"
                 defaultChecked={bookStarRating === 4}
-                onClick={handleRatingInput}
+                onChange={handleRatingInput}
               />
               4 stars
             </label>
@@ -240,7 +240,7 @@ const SingleBookView = ({
                 name="book-rating"
                 defaultChecked={bookStarRating === 5}
                 value="5"
-                onClick={handleRatingInput}
+                onChange={handleRatingInput}
               />
               5 stars
             </label>
@@ -265,7 +265,7 @@ const SingleBookView = ({
         </form>
       )}
       {!editReviewStatus && previousBookReviews.length > 0 && (
-        <div className="mt-12">
+        <div className="mt-12 pb-12">
           <h1 className="text-3xl font-bold underline underline-offset-2">
             Reviews:
           </h1>

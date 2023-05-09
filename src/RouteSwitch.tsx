@@ -85,6 +85,7 @@ const RouteSwitch = () => {
           setUserSignInStatus={setUserSignInStatus}
           switchDispUserValue={switchDispUserValue}
           setViewOwnProfile={setViewOwnProfile}
+          setViewedProfileID={setViewedProfileID}
           setUserID={setUserID}
         />
       )}
