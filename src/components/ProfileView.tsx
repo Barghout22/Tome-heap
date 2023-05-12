@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { getAuth, updateProfile } from "firebase/auth";
 import {
   getStorage,
@@ -30,9 +31,11 @@ type User = {
 const ProfileView = ({
   viewOwnProfile,
   viewedProfileID,
+  setUserID,
 }: {
   viewOwnProfile: boolean;
   viewedProfileID: string;
+  setUserID: Function;
 }) => {
   useEffect(() => {
     const dataDocName = viewOwnProfile
@@ -63,6 +66,7 @@ const ProfileView = ({
     profilePicture: " ",
     about: " ",
   });
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState(" ");
   const [lastName, setLastName] = useState(" ");
   const [userImage, setUserImage] = useState(" ");
@@ -135,6 +139,11 @@ const ProfileView = ({
       setUserAbout(userAboutPlaceHolder);
     }
   };
+
+  const viewBooks = () => {
+    setUserID(`${currentUser.userID}`);
+    navigate("/ProfileBookListDisplay");
+  };
   return (
     <>
       {updateStatus && (
@@ -155,84 +164,96 @@ const ProfileView = ({
       <h1 className="border-b-2 pt-16 pl-16 bg-gray-800 text-white font-Lobster text-3xl font-bold">
         Profile
       </h1>
-      <div className="bg-gray-800 min-h-screen text-white font-Lobster flex pt-14 text-2xl">
-        <div className="w-1/4 mx-12 aspect-square flex flex-col items-center ">
-          <img src={userImage} alt="" className="w-full border-2 " />
-          {viewOwnProfile && (
-            <div className="flex flex-col w-full mt-2">
-              {" "}
-              <label className="bg-white rounded-full text-2xl font-semibold  text-black transition-all text-center hover:bg-black hover:text-white cursor-pointer">
-                upload new image
-                <input
-                  className="hidden"
-                  type="file"
-                  accept="image/*"
-                  onChange={updateProfilePic}
-                ></input>
-              </label>
-            </div>
-          )}
-        </div>
-
-        <div>
-          <h2 className="font-semibold text-2xl">
-            {!editState ? `${firstName} ${lastName}` : null}
-          </h2>
-
-          {!editState ? <p className="mt-12">about me: </p> : null}
-          {!editState ? <p>{userAbout}</p> : null}
-          {editState && (
-            <form
-              onSubmit={handleUpdates}
-              className="flex flex-col items-center"
-            >
-              <span className="w-full flex justify-between">
-                <input
-                  className="border-2 border-white bg-gray-800 text-white font-Lobster w-1/3"
-                  type="text"
-                  placeholder="first name"
-                  defaultValue={firstName}
-                  required
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-                <input
-                  className="border-2 border-white bg-gray-800 text-white font-Lobster w-1/3"
-                  type="text"
-                  placeholder="last name"
-                  defaultValue={lastName}
-                  required
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </span>
-              <textarea
-                className="border-2 border-white bg-gray-800 text-white font-Lobster w-full mt-8"
-                id="story"
-                name="story"
-                rows={5}
-                cols={33}
-                required
-                onChange={(e) => {
-                  upDateUserAboutPlaceHolder(e.target.value);
-                }}
-                defaultValue={userAbout}
-              ></textarea>
-              <button
-                type="submit"
-                className="bg-white rounded-full h-11 mt-14 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
+      <div className="bg-gray-800 min-h-screen text-white font-Lobster flex flex-col pt-14 ">
+        <div className="flex flex-col sm:flex-row">
+          <div className="w-3/4 mx-12 aspect-square flex flex-col items-center sm:w-1/4 ">
+            <img src={userImage} alt="" className="w-full border-2 " />
+            {viewOwnProfile && (
+              <div className="flex flex-col w-full mt-2">
+                {" "}
+                <label className="bg-white rounded-full text-2xl font-semibold  text-black transition-all text-center hover:bg-black hover:text-white cursor-pointer">
+                  upload new image
+                  <input
+                    className="hidden"
+                    type="file"
+                    accept="image/*"
+                    onChange={updateProfilePic}
+                  ></input>
+                </label>
+              </div>
+            )}
+          </div>
+          <div className="mt-12 sm:mt-0 pl-5 w-10/12 sm:w-1/2">
+            <h2 className="font-semibold text-3xl ">
+              {!editState ? `${firstName} ${lastName}` : null}
+            </h2>
+            {!editState ? (
+              <p className="mt-12 font-semibold text-2xl">about me: </p>
+            ) : null}
+            {!editState ? <p className="text-2xl">{userAbout}</p> : null}
+            {editState && (
+              <form
+                onSubmit={handleUpdates}
+                className="flex flex-col items-center"
               >
-                Save information
+                <span className="w-full flex justify-between">
+                  <input
+                    className="border-2 border-white bg-gray-800 text-white font-Lobster w-5/12 h-12"
+                    type="text"
+                    placeholder="first name"
+                    defaultValue={firstName}
+                    required
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                  <input
+                    className="border-2 border-white bg-gray-800 text-white font-Lobster w-5/12"
+                    type="text"
+                    placeholder="last name"
+                    defaultValue={lastName}
+                    required
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </span>
+                <textarea
+                  className="border-2 border-white bg-gray-800 text-white font-Lobster w-full mt-8"
+                  id="story"
+                  name="story"
+                  rows={8}
+                  cols={33}
+                  required
+                  onChange={(e) => {
+                    upDateUserAboutPlaceHolder(e.target.value);
+                  }}
+                  defaultValue={userAbout}
+                ></textarea>
+                <button
+                  type="submit"
+                  className="bg-white rounded-full h-11 mt-10 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
+                >
+                  Save information
+                </button>
+              </form>
+            )}
+            {viewOwnProfile && !editState && (
+              <button
+                className="bg-white rounded-full h-11 mt-14 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
+                onClick={() => setEditState(true)}
+              >
+                edit information
               </button>
-            </form>
-          )}
-          {viewOwnProfile && !editState && (
-            <button
-              className="bg-white rounded-full h-11 mt-14 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
-              onClick={() => setEditState(true)}
-            >
-              edit information
-            </button>
-          )}
+            )}
+          </div>
         </div>
+        {!viewOwnProfile && (
+          <div className="bg-gray-800 flex justify-center items-center">
+            <p
+              className="text-black w-80 h-10/12 mb-14 p-12 text-center bg-white text-3xl font-semibold transition-all hover:text-white hover:bg-black cursor-pointer "
+              onClick={viewBooks}
+            >
+              view {currentUser.username.split(" ")[0]}'s books
+            </p>
+          </div>
+        )}
       </div>
     </>
   );

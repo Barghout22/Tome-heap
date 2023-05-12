@@ -104,6 +104,7 @@ const RouteSwitch = () => {
             <ProfileView
               viewOwnProfile={viewOwnProfile}
               viewedProfileID={viewedProfileID}
+              setUserID={setUserID}
             />
           }
         />

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BookDispCardComponent from "./BookDispCardComponent";
+import { getAuth } from "firebase/auth";
 import {
   getFirestore,
   collection,
@@ -23,7 +24,7 @@ const ProfileBookDisp = ({
   useEffect(() => {
     let queryResult;
     let bookDataPlaceHolder: BookInfo[] | undefined = [];
-    const q = query(collection(getFirestore(), userID));
+    const q = query(collection(getFirestore(), `userBookList-${userID}`));
     const querySnapshot = async () => await getDocs(q);
     querySnapshot().then((result) => {
       queryResult = result.docs;
@@ -44,7 +45,11 @@ const ProfileBookDisp = ({
   });
   return (
     <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-14">
-      <h1 className="text-3xl underline underline-offset-8">My books</h1>
+      <h1 className="text-3xl underline underline-offset-8 ml-4">
+        {userID === getAuth().currentUser?.uid
+          ? "My list of books"
+          : "list of books"}
+      </h1>
 
       {bookList ? (
         bookList.length > 0 ? (

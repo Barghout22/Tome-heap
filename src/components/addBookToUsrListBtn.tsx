@@ -75,7 +75,7 @@ const AddBookToUserListBtn = ({
     <>
       {!bookPresentInUserList && (
         <button
-          className="bg-white rounded-full h-11 mt-14 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
+          className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
           onClick={handleAddition}
         >
           {!bookPresentInUserList ? "add to my books" : "Remove from my books"}
@@ -83,7 +83,7 @@ const AddBookToUserListBtn = ({
       )}
       {bookPresentInUserList && (
         <button
-          className="bg-white rounded-full h-11 mt-14 text-xl font-semibold w-44 text-black transition-all hover:bg-red-500 hover:text-white"
+          className="bg-white rounded-full h-11 mt-6 text-xl font-semibold w-44 text-black transition-all hover:bg-red-500 hover:text-white"
           onClick={handleAddition}
         >
           Remove from my books

@@ -59,8 +59,8 @@ const BookDispCardComponent = ({
   };
 
   return (
-    <div className="flex p-4 w-96 h-96 shadow-lg">
-      <img src={book.imageSrc} alt="" className="h-32" />
+    <div className="flex flex-col p-4 w-96 h-96 shadow-lg sm:flex-row">
+      <img src={book.imageSrc} alt="" className="w-20 sm:h-32" />
       <div className=" flex flex-col m-4 justify-between">
         <div>
           <h2
@@ -80,8 +80,8 @@ const BookDispCardComponent = ({
           <p>
             <span className="font-semibold">description:</span>
             {book.description
-              ? book.description.length > 100
-                ? `${book.description.slice(0, 100)}...
+              ? book.description.length > 90
+                ? `${book.description.slice(0, 90)}...
                               `
                 : book.description
               : "no description available"}

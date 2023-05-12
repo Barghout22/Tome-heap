@@ -245,14 +245,14 @@ const SingleBookView = ({
           </div>
         </div>
       )}
-      <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-20  pl-14">
-        <div className="flex ">
-          <img src={bookData.imageSrc} className="w-3/12 h-fit" />
+      <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-20  pl-6 sm:pl-14">
+        <div className="flex flex-col sm:flex-row items-center">
+          <img src={bookData.imageSrc} className="w-6/12 h-fit sm:w-1/3" />
           <div className="flex flex-col ml-10 mr-10">
             <h1 className="font-bold text-3xl">{bookData.bookName}</h1>
             <h2 className="text-2xl">{bookData.author}</h2>
             <h3 className="text-2xl">{bookData.pageNo} pages</h3>
-            <p className="text-xl">{bookData.description}</p>
+            <p className="text-md sm:text-xl">{bookData.description}</p>
             <p>
               current average rating:{" "}
               {averageRating > 0
@@ -272,7 +272,7 @@ const SingleBookView = ({
         {userSignInStatus && (!userHasRviewd || editReviewStatus) && (
           <form
             onSubmit={handleReviewInput}
-            className="flex flex-col w-2/3 p-12 "
+            className="flex flex-col w-10/12 sm:w-2/3 sm:p-12 "
           >
             <p className="text-2xl font-semibold ml-4 mt-5">
               rate this book from 1 to 5 stars

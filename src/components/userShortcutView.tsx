@@ -29,7 +29,7 @@ const ViewUsrShrtcuts = ({
     navigate("/profile");
   };
   const ViewOwnBooks = () => {
-    const userID = `userBookList-${getAuth().currentUser?.uid}`;
+    const userID = `${getAuth().currentUser?.uid}`;
     setUserID(userID);
     switchDispUserValue();
     navigate("/ProfileBookListDisplay");
