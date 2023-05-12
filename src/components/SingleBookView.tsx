@@ -206,11 +206,19 @@ const SingleBookView = ({
 
   const deleteReview = async () => {
     const reviewListPlaceholder = previousBookReviews;
-    reviewListPlaceholder.unshift();
+    reviewListPlaceholder.shift();
     setPreviousBookReviews(reviewListPlaceholder);
     setUserHasRviewd(false);
     setBookStarRating(0);
     setBookReview(" ");
+    if (reviewListPlaceholder.length > 0) {
+      let averageRating = 0;
+      reviewListPlaceholder.forEach((review) => {
+        averageRating += Number(review.rating);
+      });
+      averageRating /= reviewListPlaceholder.length;
+      setAverageRating(averageRating);
+    }
     const bookReviewCluster = `book-${bookData.id}-reviews`;
     const userReviewID = `user-${getAuth().currentUser?.uid}-review`;
     const userReviewCluster = `user-${getAuth().currentUser?.uid}-reviews`;
@@ -355,7 +363,7 @@ const SingleBookView = ({
                 {isThisCurrentUser && (
                   <>
                     <button
-                      className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
+                      className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-36 text-black transition-all hover:bg-black hover:text-white"
                       onClick={() => {
                         setEditReviewStatus(true);
                       }}
@@ -363,7 +371,7 @@ const SingleBookView = ({
                       edit review
                     </button>
                     <button
-                      className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-44 text-black transition-all hover:bg-red-500 hover:text-white"
+                      className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-36 ml-3 text-black transition-all hover:bg-red-500 hover:text-white"
                       onClick={deleteReview}
                     >
                       delete review
