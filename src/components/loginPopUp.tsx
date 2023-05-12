@@ -135,7 +135,7 @@ const LogInPopUp = ({
 
   return (
     <div className="absolute w-full h-screen flex justify-center bg-black bg-opacity-50 items-center backdrop-blur-sm">
-      <div className=" bg-white w-96 h-1/2 text-center p-7 relative flex flex-col justify-evenly items-center rounded-md">
+      <div className=" bg-white w-80 h-1/2 text-center p-7 relative flex flex-col justify-evenly items-center rounded-md">
         <button
           className="absolute w-10 top-[-20px] right-[-20px] "
           onClick={() => setLogInStatus("none")}

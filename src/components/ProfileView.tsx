@@ -56,7 +56,7 @@ const ProfileView = ({
       setFirstName(userPlaceholder.username.split(" ")[0]);
       setLastName(userPlaceholder.username.split(" ")[1]);
     });
-  }, []);
+  }, [viewOwnProfile]);
   const [currentUser, setCurrentUser] = useState<User>({
     userID: " ",
     username: " ",
@@ -156,14 +156,15 @@ const ProfileView = ({
         Profile
       </h1>
       <div className="bg-gray-800 min-h-screen text-white font-Lobster flex pt-14 text-2xl">
-        <div className="w-1/4 mx-12 aspect-square">
+        <div className="w-1/4 mx-12 aspect-square flex flex-col items-center ">
           <img src={userImage} alt="" className="w-full border-2 " />
           {viewOwnProfile && (
-            <div className="flex flex-col mt-9">
+            <div className="flex flex-col w-full mt-2">
               {" "}
-              <label>
-                update profile image:
+              <label className="bg-white rounded-full text-2xl font-semibold  text-black transition-all text-center hover:bg-black hover:text-white cursor-pointer">
+                upload new image
                 <input
+                  className="hidden"
                   type="file"
                   accept="image/*"
                   onChange={updateProfilePic}
@@ -178,7 +179,7 @@ const ProfileView = ({
             {!editState ? `${firstName} ${lastName}` : null}
           </h2>
 
-          {!editState ? <p>about me: </p> : null}
+          {!editState ? <p className="mt-12">about me: </p> : null}
           {!editState ? <p>{userAbout}</p> : null}
           {editState && (
             <form

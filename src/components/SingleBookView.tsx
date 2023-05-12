@@ -91,6 +91,7 @@ const SingleBookView = ({
   const [bookReview, setBookReview] = useState(" ");
   const [userHasRviewd, setUserHasRviewd] = useState(true);
   const [editReviewStatus, setEditReviewStatus] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState(false);
   const [previousBookReviews, setPreviousBookReviews] = useState([
     {
       userName: " ",
@@ -189,7 +190,7 @@ const SingleBookView = ({
         bookData,
         getAuth().currentUser!.photoURL || " ",
         bookReview !== " " ? bookReview : " "
-      );
+      ).then(() => setUpdateStatus(true));
     }
   };
   const goToProfile = (userId: string) => {
@@ -228,162 +229,181 @@ const SingleBookView = ({
     await deleteDoc(doc(getFirestore(), userReviewCluster, bookReviewID));
   };
   return (
-    <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-20  pl-14">
-      <div className="flex ">
-        <img src={bookData.imageSrc} className="w-3/12 h-fit" />
-        <div className="flex flex-col ml-10 mr-10">
-          <h1 className="font-bold text-3xl">{bookData.bookName}</h1>
-          <h2 className="text-2xl">{bookData.author}</h2>
-          <h3 className="text-2xl">{bookData.pageNo} pages</h3>
-          <p className="text-xl">{bookData.description}</p>
-          <p>
-            current average rating:{" "}
-            {averageRating > 0
-              ? `${averageRating} stars (${previousBookReviews.length} review(s))`
-              : "no ratings on this book"}
-          </p>
-          <AddBookToUserListBtn
-            userSignInStatus={userSignInStatus}
-            setLogInStatus={setLogInStatus}
-            book={bookData}
-            bookPresentInUserList={bookPresentInUserList}
-            setBookPresentInUserList={setBookPresentInUserList}
-          />
+    <>
+      {updateStatus && (
+        <div className="absolute w-screen	h-screen bg-black bg-opacity-50">
+          <div className="absolute top-1/3 left-1/3 bg-white text-black rounded-xl font-Lobster text-3xl p-8 font-bold">
+            <p> Review saved</p>
+            <button
+              className="bg-black text-white rounded-full h-11 mt-2 text-2xl font-semibold w-44 transition-all"
+              onClick={() => {
+                setUpdateStatus(false);
+              }}
+            >
+              ok
+            </button>
+          </div>
         </div>
-      </div>
+      )}
+      <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-20  pl-14">
+        <div className="flex ">
+          <img src={bookData.imageSrc} className="w-3/12 h-fit" />
+          <div className="flex flex-col ml-10 mr-10">
+            <h1 className="font-bold text-3xl">{bookData.bookName}</h1>
+            <h2 className="text-2xl">{bookData.author}</h2>
+            <h3 className="text-2xl">{bookData.pageNo} pages</h3>
+            <p className="text-xl">{bookData.description}</p>
+            <p>
+              current average rating:{" "}
+              {averageRating > 0
+                ? `${averageRating} stars (${previousBookReviews.length} review(s))`
+                : "no ratings on this book"}
+            </p>
+            <AddBookToUserListBtn
+              userSignInStatus={userSignInStatus}
+              setLogInStatus={setLogInStatus}
+              book={bookData}
+              bookPresentInUserList={bookPresentInUserList}
+              setBookPresentInUserList={setBookPresentInUserList}
+            />
+          </div>
+        </div>
 
-      {userSignInStatus && (!userHasRviewd || editReviewStatus) && (
-        <form
-          onSubmit={handleReviewInput}
-          className="flex flex-col w-2/3 mt-12"
-        >
-          <p className="text-2xl font-semibold ml-4 mt-5">
-            rate this book from 1 to 5 stars
-          </p>
-          <span className="flex w-1/2 justify-around">
-            <label>
-              <input
-                type="radio"
-                name="book-rating"
-                value="1"
-                required
-                onChange={handleRatingInput}
-                defaultChecked={bookStarRating == 1 ? true : false}
-              />
-              1 star
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="book-rating"
-                value="2"
-                defaultChecked={bookStarRating == 2 ? true : false}
-                onChange={handleRatingInput}
-              />
-              2 stars
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="book-rating"
-                value="3"
-                defaultChecked={bookStarRating == 3 ? true : false}
-                onChange={handleRatingInput}
-              />
-              3 stars
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="book-rating"
-                value="4"
-                defaultChecked={bookStarRating == 4 ? true : false}
-                onChange={handleRatingInput}
-              />
-              4 stars
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="book-rating"
-                defaultChecked={bookStarRating == 5 ? true : false}
-                value="5"
-                onChange={handleRatingInput}
-              />
-              5 stars
-            </label>
-          </span>
-
-          <textarea
-            cols={30}
-            rows={10}
-            className="border-2 border-white bg-gray-800 text-white font-Lobster text-2xl p-4"
-            defaultValue={bookReview}
-            onChange={(e) => {
-              // console.log(e.target.value);
-              setBookReview(e.target.value);
-            }}
-          ></textarea>
-          <button
-            type="submit"
-            className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
+        {userSignInStatus && (!userHasRviewd || editReviewStatus) && (
+          <form
+            onSubmit={handleReviewInput}
+            className="flex flex-col w-2/3 p-12 "
           >
-            Save review
-          </button>
-        </form>
-      )}
-      {!editReviewStatus && previousBookReviews.length > 0 && (
-        <div className="mt-12 pb-12">
-          <h1 className="text-3xl font-bold underline underline-offset-2">
-            Reviews:
-          </h1>
-          {previousBookReviews.map((review) => {
-            const isThisCurrentUser =
-              getAuth().currentUser?.uid === review.userId;
-            const editableReview = isThisCurrentUser ? !editReviewStatus : true;
-            return (
-              <div
-                className={
-                  editableReview
-                    ? "text-white text-2xl py-10 border-b-2"
-                    : "hidden"
-                }
-                key={review.userId}
-              >
-                <img className="w-20" src={review.profilePicSource} alt="" />
-                <h2
-                  className="cursor-pointer hover:underline"
-                  onClick={() => goToProfile(review.userId)}
+            <p className="text-2xl font-semibold ml-4 mt-5">
+              rate this book from 1 to 5 stars
+            </p>
+            <span className="flex w-1/2 justify-around">
+              <label>
+                <input
+                  type="radio"
+                  name="book-rating"
+                  value="1"
+                  required
+                  onChange={handleRatingInput}
+                  defaultChecked={bookStarRating == 1 ? true : false}
+                />
+                1 star
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="book-rating"
+                  value="2"
+                  defaultChecked={bookStarRating == 2 ? true : false}
+                  onChange={handleRatingInput}
+                />
+                2 stars
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="book-rating"
+                  value="3"
+                  defaultChecked={bookStarRating == 3 ? true : false}
+                  onChange={handleRatingInput}
+                />
+                3 stars
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="book-rating"
+                  value="4"
+                  defaultChecked={bookStarRating == 4 ? true : false}
+                  onChange={handleRatingInput}
+                />
+                4 stars
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="book-rating"
+                  defaultChecked={bookStarRating == 5 ? true : false}
+                  value="5"
+                  onChange={handleRatingInput}
+                />
+                5 stars
+              </label>
+            </span>
+
+            <textarea
+              cols={30}
+              rows={10}
+              className="border-2 border-white bg-gray-800 text-white font-Lobster text-2xl p-4"
+              defaultValue={bookReview}
+              onChange={(e) => {
+                // console.log(e.target.value);
+                setBookReview(e.target.value);
+              }}
+            ></textarea>
+            <button
+              type="submit"
+              className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
+            >
+              Save review
+            </button>
+          </form>
+        )}
+        {!editReviewStatus && previousBookReviews.length > 0 && (
+          <div className="mt-12 pb-12">
+            <h1 className="text-3xl font-bold underline underline-offset-2">
+              Reviews:
+            </h1>
+            {previousBookReviews.map((review) => {
+              const isThisCurrentUser =
+                getAuth().currentUser?.uid === review.userId;
+              const editableReview = isThisCurrentUser
+                ? !editReviewStatus
+                : true;
+              return (
+                <div
+                  className={
+                    editableReview
+                      ? "text-white text-2xl py-10 border-b-2"
+                      : "hidden"
+                  }
+                  key={review.userId}
                 >
-                  {review.userName}
-                </h2>
-                <h2>{review.timeStamp}</h2>
-                <p>{review.rating} stars</p>
-                <p>{review.review}</p>
-                {isThisCurrentUser && (
-                  <>
-                    <button
-                      className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-36 text-black transition-all hover:bg-black hover:text-white"
-                      onClick={() => {
-                        setEditReviewStatus(true);
-                      }}
-                    >
-                      edit review
-                    </button>
-                    <button
-                      className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-36 ml-3 text-black transition-all hover:bg-red-500 hover:text-white"
-                      onClick={deleteReview}
-                    >
-                      delete review
-                    </button>
-                  </>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+                  <img className="w-20" src={review.profilePicSource} alt="" />
+                  <h2
+                    className="cursor-pointer hover:underline"
+                    onClick={() => goToProfile(review.userId)}
+                  >
+                    {review.userName}
+                  </h2>
+                  <h2>{review.timeStamp}</h2>
+                  <p>{review.rating} stars</p>
+                  <p>{review.review}</p>
+                  {isThisCurrentUser && (
+                    <>
+                      <button
+                        className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-36 text-black transition-all hover:bg-black hover:text-white"
+                        onClick={() => {
+                          setEditReviewStatus(true);
+                        }}
+                      >
+                        edit review
+                      </button>
+                      <button
+                        className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-36 ml-3 text-black transition-all hover:bg-red-500 hover:text-white"
+                        onClick={deleteReview}
+                      >
+                        delete review
+                      </button>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
