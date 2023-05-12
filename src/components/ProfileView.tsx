@@ -52,6 +52,8 @@ const ProfileView = ({
       setCurrentUser(userPlaceholder);
       setUserAbout(userPlaceholder.about);
       setUserImage(userPlaceholder.profilePicture);
+      setFirstName(userPlaceholder.username.split(" ")[0]);
+      setLastName(userPlaceholder.username.split(" ")[1]);
     });
   }, []);
   const [currentUser, setCurrentUser] = useState<User>({
@@ -60,7 +62,8 @@ const ProfileView = ({
     profilePicture: " ",
     about: " ",
   });
-
+  const [firstName, setFirstName] = useState(" ");
+  const [lastName, setLastName] = useState(" ");
   const [userImage, setUserImage] = useState(" ");
 
   const [editState, setEditState] = useState(false);
@@ -93,10 +96,16 @@ const ProfileView = ({
       });
   };
 
-  const updatePersonalInfo = async (about: string) => {
+  const updatePersonalInfo = async (about: string, userName?: string) => {
+    const dataToBeUpdated: any = {};
+    userName ? (dataToBeUpdated["username"] = userName) : null;
+    userName
+      ? updateProfile(getAuth().currentUser!, { displayName: userName })
+      : null;
+    about !== " " ? (dataToBeUpdated["about"] = about) : null;
     await setDoc(
       doc(getFirestore(), "usersData", `user-${getAuth().currentUser?.uid}`),
-      { username: `${getAuth().currentUser?.displayName}`, about: about },
+      dataToBeUpdated,
       { merge: true }
     );
   };
@@ -105,11 +114,22 @@ const ProfileView = ({
     e.preventDefault();
     uploadUserProfilePic(e.target.files[0]);
   };
-  const handleUpdates = () => {
+  const handleUpdates = (e: any) => {
+    e.preventDefault();
     setEditState(false);
-    if (userAboutPlaceHolder !== " " && userAboutPlaceHolder !== userAbout) {
+    const userName = `${firstName} ${lastName}`;
+
+    if (
+      userAboutPlaceHolder !== userAbout &&
+      userName !== currentUser.username
+    ) {
+      updatePersonalInfo(userAboutPlaceHolder, userName);
+      setUserAbout(userAboutPlaceHolder);
+    } else if (userAboutPlaceHolder !== userAbout) {
       updatePersonalInfo(userAboutPlaceHolder);
       setUserAbout(userAboutPlaceHolder);
+    } else if (userName !== currentUser.username) {
+      updatePersonalInfo(" ", userName);
     }
   };
   return (
@@ -151,20 +171,49 @@ const ProfileView = ({
         </div>
 
         <div>
-          <h2>username:{currentUser!.username}</h2>
-          <p>about: {!editState ? userAbout : null}</p>
+          <h2 className="font-semibold text-2xl">
+            {!editState ? `${firstName} ${lastName}` : null}
+          </h2>
+
+          {!editState ? <p>about me: </p> : null}
+          {!editState ? <p>{userAbout}</p> : null}
           {editState && (
-            <textarea
-              className="border-2 border-white bg-gray-800 text-white font-Lobster"
-              id="story"
-              name="story"
-              rows={5}
-              cols={33}
-              onChange={(e) => {
-                upDateUserAboutPlaceHolder(e.target.value);
-              }}
-              defaultValue={userAbout}
-            ></textarea>
+            <form onSubmit={handleUpdates}>
+              <input
+                className="border-2 border-white bg-gray-800 text-white font-Lobster"
+                type="text"
+                placeholder="first name"
+                defaultValue={firstName}
+                required
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+              <input
+                className="border-2 border-white bg-gray-800 text-white font-Lobster"
+                type="text"
+                placeholder="last name"
+                defaultValue={lastName}
+                required
+                onChange={(e) => setLastName(e.target.value)}
+              />
+              <textarea
+                className="border-2 border-white bg-gray-800 text-white font-Lobster"
+                id="story"
+                name="story"
+                rows={5}
+                cols={33}
+                required
+                onChange={(e) => {
+                  upDateUserAboutPlaceHolder(e.target.value);
+                }}
+                defaultValue={userAbout}
+              ></textarea>
+              <button
+                type="submit"
+                className="bg-white rounded-full h-11 mt-14 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
+              >
+                Save information
+              </button>
+            </form>
           )}
           {viewOwnProfile && !editState && (
             <button
@@ -172,14 +221,6 @@ const ProfileView = ({
               onClick={() => setEditState(true)}
             >
               edit information
-            </button>
-          )}
-          {viewOwnProfile && editState && (
-            <button
-              className="bg-white rounded-full h-11 mt-14 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
-              onClick={handleUpdates}
-            >
-              Save information
             </button>
           )}
         </div>
