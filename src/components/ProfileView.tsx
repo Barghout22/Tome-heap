@@ -51,6 +51,7 @@ const ProfileView = ({
 
       setCurrentUser(userPlaceholder);
       setUserAbout(userPlaceholder.about);
+      upDateUserAboutPlaceHolder(userPlaceholder.about);
       setUserImage(userPlaceholder.profilePicture);
       setFirstName(userPlaceholder.username.split(" ")[0]);
       setLastName(userPlaceholder.username.split(" ")[1]);
@@ -76,6 +77,7 @@ const ProfileView = ({
     const newImageRef = ref(getStorage(), filePath);
     const fileSnapshot = await uploadBytesResumable(newImageRef, file);
     const publicImageUrl = await getDownloadURL(newImageRef);
+    setUserImage(publicImageUrl);
     updateProfile(getAuth().currentUser!, {
       photoURL: publicImageUrl,
     })
@@ -107,7 +109,7 @@ const ProfileView = ({
       doc(getFirestore(), "usersData", `user-${getAuth().currentUser?.uid}`),
       dataToBeUpdated,
       { merge: true }
-    );
+    ).then(() => setUpdateStatus(true));
   };
 
   const updateProfilePic = (e: any) => {
@@ -130,6 +132,7 @@ const ProfileView = ({
       setUserAbout(userAboutPlaceHolder);
     } else if (userName !== currentUser.username) {
       updatePersonalInfo(" ", userName);
+      setUserAbout(userAboutPlaceHolder);
     }
   };
   return (
@@ -153,8 +156,8 @@ const ProfileView = ({
         Profile
       </h1>
       <div className="bg-gray-800 min-h-screen text-white font-Lobster flex pt-14 text-2xl">
-        <div className="w-1/3 pl-16">
-          <img src={userImage} alt="" className="w-56  h-56 border-2" />
+        <div className="w-1/4 mx-12 aspect-square">
+          <img src={userImage} alt="" className="w-full border-2 " />
           {viewOwnProfile && (
             <div className="flex flex-col mt-9">
               {" "}
@@ -178,25 +181,30 @@ const ProfileView = ({
           {!editState ? <p>about me: </p> : null}
           {!editState ? <p>{userAbout}</p> : null}
           {editState && (
-            <form onSubmit={handleUpdates}>
-              <input
-                className="border-2 border-white bg-gray-800 text-white font-Lobster"
-                type="text"
-                placeholder="first name"
-                defaultValue={firstName}
-                required
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-              <input
-                className="border-2 border-white bg-gray-800 text-white font-Lobster"
-                type="text"
-                placeholder="last name"
-                defaultValue={lastName}
-                required
-                onChange={(e) => setLastName(e.target.value)}
-              />
+            <form
+              onSubmit={handleUpdates}
+              className="flex flex-col items-center"
+            >
+              <span className="w-full flex justify-between">
+                <input
+                  className="border-2 border-white bg-gray-800 text-white font-Lobster w-1/3"
+                  type="text"
+                  placeholder="first name"
+                  defaultValue={firstName}
+                  required
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+                <input
+                  className="border-2 border-white bg-gray-800 text-white font-Lobster w-1/3"
+                  type="text"
+                  placeholder="last name"
+                  defaultValue={lastName}
+                  required
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </span>
               <textarea
-                className="border-2 border-white bg-gray-800 text-white font-Lobster"
+                className="border-2 border-white bg-gray-800 text-white font-Lobster w-full mt-8"
                 id="story"
                 name="story"
                 rows={5}
