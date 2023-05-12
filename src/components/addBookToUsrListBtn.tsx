@@ -58,6 +58,15 @@ const AddBookToUserListBtn = ({
         const deleteBookID = querySnapshot.docs[0].id;
         // console.log(deleteBookID);
         await deleteDoc(doc(getFirestore(), userBookCluster, deleteBookID));
+
+        const bookReviewCluster = `book-${book.id}-reviews`;
+        const userReviewID = `user-${getAuth().currentUser?.uid}-review`;
+        const userReviewCluster = `user-${getAuth().currentUser?.uid}-reviews`;
+        const bookReviewID = `book-${book.id}-review`;
+
+        await deleteDoc(doc(getFirestore(), bookReviewCluster, userReviewID));
+        await deleteDoc(doc(getFirestore(), userReviewCluster, bookReviewID));
+
         setBookPresentInUserList(false);
       }
     }
@@ -69,7 +78,7 @@ const AddBookToUserListBtn = ({
           className="bg-white rounded-full h-11 mt-14 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
           onClick={handleAddition}
         >
-          add to my books
+          {!bookPresentInUserList ? "add to my books" : "Remove from my books"}
         </button>
       )}
       {bookPresentInUserList && (

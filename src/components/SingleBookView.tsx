@@ -2,7 +2,6 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookInfo } from "./BookListView";
-import profileImagePlaceHolder from "../image_resources/userDefaultImage.png";
 import { userDefaultImage } from "../RouteSwitch";
 import {
   getFirestore,
@@ -12,6 +11,7 @@ import {
   addDoc,
   getDocs,
   setDoc,
+  deleteDoc,
   doc,
   serverTimestamp,
 } from "firebase/firestore";
@@ -203,6 +203,22 @@ const SingleBookView = ({
 
     navigate("/profile");
   };
+
+  const deleteReview = async () => {
+    const reviewListPlaceholder = previousBookReviews;
+    reviewListPlaceholder.unshift();
+    setPreviousBookReviews(reviewListPlaceholder);
+    setUserHasRviewd(false);
+    setBookStarRating(0);
+    setBookReview(" ");
+    const bookReviewCluster = `book-${bookData.id}-reviews`;
+    const userReviewID = `user-${getAuth().currentUser?.uid}-review`;
+    const userReviewCluster = `user-${getAuth().currentUser?.uid}-reviews`;
+    const bookReviewID = `book-${bookData.id}-review`;
+
+    await deleteDoc(doc(getFirestore(), bookReviewCluster, userReviewID));
+    await deleteDoc(doc(getFirestore(), userReviewCluster, bookReviewID));
+  };
   return (
     <div className="bg-gray-800 min-h-screen text-white font-Lobster pt-20  pl-14">
       <div className="flex ">
@@ -337,14 +353,22 @@ const SingleBookView = ({
                 <p>{review.rating} stars</p>
                 <p>{review.review}</p>
                 {isThisCurrentUser && (
-                  <button
-                    className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
-                    onClick={() => {
-                      setEditReviewStatus(true);
-                    }}
-                  >
-                    edit review
-                  </button>
+                  <>
+                    <button
+                      className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-44 text-black transition-all hover:bg-black hover:text-white"
+                      onClick={() => {
+                        setEditReviewStatus(true);
+                      }}
+                    >
+                      edit review
+                    </button>
+                    <button
+                      className="bg-white rounded-full h-11 mt-4 text-2xl font-semibold w-44 text-black transition-all hover:bg-red-500 hover:text-white"
+                      onClick={deleteReview}
+                    >
+                      delete review
+                    </button>
+                  </>
                 )}
               </div>
             );
