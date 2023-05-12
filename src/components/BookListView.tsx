@@ -110,13 +110,18 @@ const BookListView = ({
   }, [searchType]);
 
   const getMoreResults = () => {
-    let searchVal = noOfSearches + 11;
+    let searchVal = noOfSearches + 12;
     // console.log("searchvalue", searchVal);
 
     reqInfo(searchTerm, searchType, searchVal, setTotalItems).then((items) => {
-      let bookInfoHolder: BookInfo[] = displayBookList
-        ? [...displayBookList, ...items]
-        : items;
+      let bookInfoHolder: BookInfo[] = displayBookList;
+      // console.log("book list", displayBookList);
+      // console.log("new books", items);
+      items.forEach((item: any) => {
+        const itemAlreadyIncluded =
+          bookInfoHolder.filter((result) => result.id === item.id).length > 0;
+        itemAlreadyIncluded ? null : bookInfoHolder.push(item);
+      });
       setNoOfSearches(bookInfoHolder.length);
       setdisplaydBookList(bookInfoHolder);
     });
@@ -157,8 +162,9 @@ const BookListView = ({
       )}
       {totalItems > 0 && (
         <p className="text-2xl mt-4 ml-4">
-          displaying {noOfSearches + 10} out of {totalItems} total results for{" "}
-          {searchType}: <span className="font-semibold">{searchTerm}</span>
+          displaying {noOfSearches === 0 ? 10 : noOfSearches} out of{" "}
+          {totalItems} total results for {searchType}:{" "}
+          <span className="font-semibold">{searchTerm}</span>
         </p>
       )}
       {displayBookList.length > 1 && (
