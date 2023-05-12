@@ -86,6 +86,7 @@ const ProfileView = ({
       photoURL: publicImageUrl,
     })
       .then(() => {
+        window.scrollTo(0, 0);
         setUpdateStatus(true);
         setDoc(
           doc(
@@ -113,7 +114,10 @@ const ProfileView = ({
       doc(getFirestore(), "usersData", `user-${getAuth().currentUser?.uid}`),
       dataToBeUpdated,
       { merge: true }
-    ).then(() => setUpdateStatus(true));
+    ).then(() => {
+      window.scrollTo(0, 0);
+      setUpdateStatus(true);
+    });
   };
 
   const updateProfilePic = (e: any) => {

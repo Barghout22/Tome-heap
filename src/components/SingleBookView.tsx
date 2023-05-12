@@ -42,6 +42,7 @@ const addReview = async (
   rating: number,
   bookId: string,
   bookPresentInUserList: boolean,
+  setBookPresentInUserList: Function,
   bookData: BookInfo,
   photoURL: string,
   review?: string
@@ -67,7 +68,7 @@ const addReview = async (
     await addDoc(
       collection(getFirestore(), `userBookList-${getAuth().currentUser?.uid}`),
       bookData
-    );
+    ).then(() => setBookPresentInUserList(true));
   }
 };
 
@@ -187,10 +188,14 @@ const SingleBookView = ({
         bookStarRating,
         bookData.id,
         bookPresentInUserList,
+        setBookPresentInUserList,
         bookData,
         getAuth().currentUser!.photoURL || " ",
         bookReview !== " " ? bookReview : " "
-      ).then(() => setUpdateStatus(true));
+      ).then(() => {
+        window.scrollTo(0, 0);
+        setUpdateStatus(true);
+      });
     }
   };
   const goToProfile = (userId: string) => {
