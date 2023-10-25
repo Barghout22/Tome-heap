@@ -34,13 +34,34 @@ const ViewUsrShrtcuts = ({
     switchDispUserValue();
     navigate("/ProfileBookListDisplay");
   };
+  const viewFriends=()=>{
+     switchDispUserValue();
+     navigate("/friends");
+  };
+  const viewFriendRequests = () => {
+     switchDispUserValue();
+     navigate("/friendRequests");
+  };
+  const viewMessages = () => {
+     switchDispUserValue();
+     navigate("/messages");
+  };
   return (
     <ul className="bg-white w-52 rounded-md absolute top-16 right-10 px-4 py-2 cursor-pointer">
       <li className="hover:bg-slate-400" onClick={goToProfile}>
-        Profile
+        my profile
       </li>
       <li className="hover:bg-slate-400" onClick={ViewOwnBooks}>
         My books
+      </li>
+      <li className="hover:bg-slate-400" onClick={viewFriends}>
+        Friends
+      </li>
+      <li className="hover:bg-slate-400" onClick={viewFriendRequests}>
+        Friend requests
+      </li>
+      <li className="hover:bg-slate-400" onClick={viewMessages}>
+        Messages
       </li>
       <li className="hover:bg-slate-400" onClick={signOUt}>
         Sign out

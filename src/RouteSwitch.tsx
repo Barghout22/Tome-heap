@@ -9,6 +9,12 @@ import BookListView from "./components/BookListView";
 import ViewUsrShrtcuts from "./components/userShortcutView";
 import SingleBookView from "./components/SingleBookView";
 import ProfileBookDisp from "./components/profileBookDisplay";
+//new components
+import FriendListDisp from "./components/friendListDisp";
+import FriendRequestDisp from "./components/friendRequestDisp";
+import MessagesDisp from "./components/messagesDisp";
+import ReviewsDisp from "./components/reviewsDisp";
+//
 import { BookInfo } from "./components/BookListView";
 import { initializeApp } from "firebase/app";
 
@@ -44,15 +50,15 @@ export const userDefaultImage =
   "https://firebasestorage.googleapis.com/v0/b/tome-heap.appspot.com/o/userDefaultImage.png?alt=media&token=ae155369-f1fc-4c82-93fc-12f489301aa7";
 
 const RouteSwitch = () => {
-  const [userSignInStatus, setUserSignInStatus] = useState(false);
-  const [logInStatus, setLogInStatus] = useState("none");
-  const [searchTerm, setSearchTerm] = useState<string>(" ");
-  const [searchType, setSearchType] = useState("book");
-  const [dispUserShrtcutMenu, setDispUserShrtcutMenu] = useState(false);
-  const [userID, setUserID] = useState("none");
-  const [viewOwnProfile, setViewOwnProfile] = useState(false);
-  const [viewedProfileID, setViewedProfileID] = useState(" ");
-
+  const [userSignInStatus, setUserSignInStatus] = useState(false); //tells the header if the user is signed in
+  const [logInStatus, setLogInStatus] = useState("none"); //tells the page whether to show a sign up or log in form
+  const [searchTerm, setSearchTerm] = useState<string>(" "); //used to search by a book name or category
+  const [searchType, setSearchType] = useState("book"); //sets the search type to "book" or "category"
+  const [dispUserShrtcutMenu, setDispUserShrtcutMenu] = useState(false); //toggles the display of shortcut menu for signed-in users
+  const [userID, setUserID] = useState("none"); //used for getting the booklist of a specific user to display it
+  const [viewOwnProfile, setViewOwnProfile] = useState(false); //tells profile component if the profile visited is the current user prof
+  const [viewedProfileID, setViewedProfileID] = useState(" "); //provides the profile id for the visited profile to the prof. component
+// bookData state is set when user clicks on a specific book in a book list and used to display that book in the single book component
   const [bookData, setBookData] = useState<BookInfo>({
     id: " ",
     bookName: " ",
@@ -98,6 +104,11 @@ const RouteSwitch = () => {
             <App setSearchTerm={setSearchTerm} setSearchType={setSearchType} />
           }
         />
+        <Route path="/friends" element={<FriendListDisp />} />
+        <Route path="/friendRequests" element={<FriendRequestDisp />} />
+        <Route path="/messages" element={<MessagesDisp />} />
+        <Route path="/reviewsDisplay" element={<ReviewsDisp />} />
+
         <Route
           path="/profile"
           element={

@@ -148,6 +148,14 @@ const ProfileView = ({
     setUserID(`${currentUser.userID}`);
     navigate("/ProfileBookListDisplay");
   };
+  const viewReviews = () => {
+    setUserID(`${currentUser.userID}`);
+    navigate("/reviewsDisplay");
+  };
+  const sendMessage = () => {
+    setUserID(`${currentUser.userID}`);
+    navigate("/messages");
+  };
   return (
     <>
       {updateStatus && (
@@ -249,12 +257,24 @@ const ProfileView = ({
           </div>
         </div>
         {!viewOwnProfile && (
-          <div className="bg-gray-800 flex justify-center items-center">
+          <div className="bg-gray-800 flex sm:flex-row justify-start items-center mt-9 flex-col">
             <p
-              className="text-black w-80 h-10/12 mb-14 p-12 text-center bg-white text-3xl font-semibold transition-all hover:text-white hover:bg-black cursor-pointer "
+              className="text-black rounded-full h-12 mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
               onClick={viewBooks}
             >
-              view {currentUser.username.split(" ")[0]}'s books
+              {currentUser.username.split(" ")[0]}'s books
+            </p>
+            <p
+              className="text-black rounded-full h-12 mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
+              onClick={viewReviews}
+            >
+              {currentUser.username.split(" ")[0]}'s book reviews
+            </p>
+            <p
+              className="text-black rounded-full h-12 mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
+              onClick={sendMessage}
+            >
+              message {currentUser.username.split(" ")[0]}
             </p>
           </div>
         )}
