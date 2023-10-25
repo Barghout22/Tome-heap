@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import App from "./App";
 import LoggedOutHeader from "./components/LoggedOutHeader";
@@ -17,6 +17,7 @@ import ReviewsDisp from "./components/reviewsDisp";
 //
 import { BookInfo } from "./components/BookListView";
 import { initializeApp } from "firebase/app";
+import { getAuth, signOut } from "firebase/auth";
 
 import {
   getFirestore,
@@ -50,6 +51,10 @@ export const userDefaultImage =
   "https://firebasestorage.googleapis.com/v0/b/tome-heap.appspot.com/o/userDefaultImage.png?alt=media&token=ae155369-f1fc-4c82-93fc-12f489301aa7";
 
 const RouteSwitch = () => {
+useEffect(()=>{
+      signOut(getAuth());
+      setUserSignInStatus(false);
+},[])
   const [userSignInStatus, setUserSignInStatus] = useState(false); //tells the header if the user is signed in
   const [logInStatus, setLogInStatus] = useState("none"); //tells the page whether to show a sign up or log in form
   const [searchTerm, setSearchTerm] = useState<string>(" "); //used to search by a book name or category
@@ -107,7 +112,10 @@ const RouteSwitch = () => {
         <Route path="/friends" element={<FriendListDisp />} />
         <Route path="/friendRequests" element={<FriendRequestDisp />} />
         <Route path="/messages" element={<MessagesDisp />} />
-        <Route path="/reviewsDisplay" element={<ReviewsDisp />} />
+        <Route
+          path="/reviewsDisplay"
+          element={<ReviewsDisp userID={userID} />}
+        />
 
         <Route
           path="/profile"
