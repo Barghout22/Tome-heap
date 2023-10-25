@@ -114,7 +114,7 @@ useEffect(()=>{
         <Route path="/messages" element={<MessagesDisp />} />
         <Route
           path="/reviewsDisplay"
-          element={<ReviewsDisp userID={userID} />}
+          element={<ReviewsDisp userID={userID} setBookData={setBookData} />}
         />
 
         <Route

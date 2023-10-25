@@ -52,6 +52,7 @@ const addReview = async (
     photoURL: photoURL !== " " ? photoURL : userDefaultImage,
     userId: userId,
     bookId: bookId,
+    bookName:bookData.bookName,
     rating: rating,
     review: review,
     timestamp: serverTimestamp(),
