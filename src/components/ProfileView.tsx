@@ -21,7 +21,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { userDefaultImage } from "../RouteSwitch";
-
+import UserpageInterface from "./userPageInterface";
 type User = {
   userID: string;
   username: string;
@@ -256,28 +256,15 @@ const ProfileView = ({
             )}
           </div>
         </div>
-        {!viewOwnProfile && (
-          <div className="bg-gray-800 flex sm:flex-row justify-start items-center mt-9 flex-col">
-            <p
-              className="text-black rounded-full h-12 mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
-              onClick={viewBooks}
-            >
-              {currentUser.username.split(" ")[0]}'s books
-            </p>
-            <p
-              className="text-black rounded-full h-12 mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
-              onClick={viewReviews}
-            >
-              {currentUser.username.split(" ")[0]}'s book reviews
-            </p>
-            <p
-              className="text-black rounded-full h-12 mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
-              onClick={sendMessage}
-            >
-              message {currentUser.username.split(" ")[0]}
-            </p>
-          </div>
-        )}
+        {
+          !viewOwnProfile && (
+            <UserpageInterface
+              viewedUserId={currentUser.userID}
+              username={currentUser.username}
+              setUserID={setUserID}
+            />
+          )
+        }
       </div>
     </>
   );
