@@ -25,23 +25,26 @@ const retrieveFriendStatus = async (
     `user-${viewedUserId}`
   );
 
-  const data = await getDoc(docRef);
-  return data.data()?.status;
+  const document = await getDoc(docRef);
+  if (document.exists()) {
+    return true;
+  } else return undefined;
 };
 const retrieveFriendRequestStatus = async (
   currentUserId: string,
   viewedUserId: string
 ) => {
-  const q = query(collection( getFirestore(),`user-${currentUserId}-friendReqs`), where("userId", "==", viewedUserId));
-
- let dataCount=0;
- let reqStatus:string|undefined=undefined
-  const data = await getDocs(q);
-  data.forEach(dataResult=>{
-    reqStatus = dataResult.data().status;
-dataCount++;  
-})
-return dataCount>0?reqStatus:undefined;
+  const docRef = doc(
+    getFirestore(),
+    `user-${currentUserId}-friendReqs`,
+    `user-${viewedUserId}`
+  );
+  const document = await getDoc(docRef);
+  if (document.exists()) {
+    return document.data().status;
+  } else {
+    return undefined;
+  }
 };
 
 const UserpageInterface = ({
@@ -55,7 +58,7 @@ const UserpageInterface = ({
 }) => {
   const currentUserId = getAuth().currentUser?.uid;
   const navigate = useNavigate();
-  const [friendStatus, setFriendStatus] = useState<string | undefined>();
+  const [friendStatus, setFriendStatus] = useState<boolean | undefined>();
   const [friendReqStatus, setFriendReqStatus] = useState<string | undefined>();
 
   useEffect(() => {
@@ -81,25 +84,43 @@ const UserpageInterface = ({
     navigate("/messages");
   };
   const removeFriend = async () => {
-    try {
-      //  await addDoc(collection(getFirestore(), userBookCluster), book);
-    } catch (e) {
-      console.error(e);
-    }
+       try {
+         await deleteDoc(
+           doc(
+             getFirestore(),
+             `user-${currentUserId}-friends`,
+             `user-${viewedUserId}`
+           )
+         );
+         await deleteDoc(
+           doc(
+             getFirestore(),
+             `user-${viewedUserId}-friends`,
+             `user-${currentUserId}`
+           )
+         );
+         setFriendStatus(undefined);
+       } catch (e) {
+         console.error(e);
+       }
   };
   const addFriend = async () => {
     try {
-      await addDoc(
-        collection(
+      await setDoc(
+        doc(
           getFirestore(),
-          `user-${currentUserId}-friendReqs`),
-        { userId: viewedUserId, status: "sent", viewed: true }
+          `user-${currentUserId}-friendReqs`,
+          `user-${viewedUserId}`
+        ),
+        { status: "sent", viewed: true }
       );
-      await addDoc(
-        collection(
+      await setDoc(
+        doc(
           getFirestore(),
-          `user-${viewedUserId}-friendReqs`),
-        { userId: currentUserId, status: "received", viewed: false }
+          `user-${viewedUserId}-friendReqs`,
+          `user-${currentUserId}`
+        ),
+        { status: "received", viewed: false }
       );
 
       setFriendReqStatus("sent");
@@ -109,21 +130,52 @@ const UserpageInterface = ({
   };
   const acceptRequest = async () => {
     try {
-      // await addDoc(collection(getFirestore(), userBookCluster), book);
+      await setDoc(
+        doc(
+          getFirestore(),
+          `user-${currentUserId}-friends`,
+          `user-${viewedUserId}`
+        ),
+        { timeStamp: new Date().toLocaleString() }
+      );
+      await setDoc(
+        doc(
+          getFirestore(),
+          `user-${viewedUserId}-friends`,
+          `user-${currentUserId}`
+        ),
+        { timeStamp: new Date().toLocaleString() }
+      );
+      setFriendStatus(true);
+      cancelRequest();
     } catch (e) {
       console.error(e);
     }
   };
   const cancelRequest = async () => {
     try {
-      //await addDoc(collection(getFirestore(), userBookCluster), book);
+      await deleteDoc(
+        doc(
+          getFirestore(),
+          `user-${currentUserId}-friendReqs`,
+          `user-${viewedUserId}`
+        )
+      );
+      await deleteDoc(
+        doc(
+          getFirestore(),
+          `user-${viewedUserId}-friendReqs`,
+          `user-${currentUserId}`
+        )
+      );
+      setFriendReqStatus(undefined);
     } catch (e) {
       console.error(e);
     }
   };
 
   return (
-    // getAuth().currentUser&&
+     getAuth().currentUser&&
     <>
       {friendStatus && (
         <div className="bg-gray-800 flex sm:flex-row justify-start items-center mt-9 flex-col">
