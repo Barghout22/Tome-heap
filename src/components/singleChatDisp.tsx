@@ -86,6 +86,30 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
             messageStatus: result.data().messageStatus,
             read: true,
           });
+          getDocs(
+            query(
+              collection(
+                getFirestore(),
+                `user-${getAuth().currentUser?.uid}-messages`
+              ),
+             
+                where("read", "==", false),
+                where("otherUserId", "==", viewedUserId)
+              
+            )
+          ).then((results) =>
+            results.forEach((result) => {
+              setDoc(
+                doc(
+                  getFirestore(),
+                  `user-${getAuth().currentUser?.uid}-messages`,
+                  result.id
+                ),
+                { read: true },
+                { merge: true }
+              );
+            })
+          );
         });
 
         placeHolderArr.sort(function (a, b) {
@@ -167,14 +191,14 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
                 className="bg-gray-300 text-black w-1/2 rounded-md self-start m-12 p-3"
               >
                 <span>
-                    <img
-                      src={message.otherUserProfilePic}
-                      alt=""
-                      className="w-11 h-11 rounded-full"
-                    />
-                    <p>{message.username}</p>
+                  <img
+                    src={message.otherUserProfilePic}
+                    alt=""
+                    className="w-11 h-11 rounded-full"
+                  />
+                  <p className="font-bold text-xl">{message.username}</p>
                 </span>
-                <p>{message.messageBody}</p>
+                <p className="text-2xl">{message.messageBody}</p>
                 <p>{message.timestamp}</p>
               </div>
             ) : (
@@ -182,8 +206,7 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
                 key={uniqid()}
                 className="bg-white text-black w-1/2 rounded-md self-end m-12 p-3"
               >
-                <p>me:</p>
-                <p>{message.messageBody}</p>
+                <p className="text-2xl">{message.messageBody}</p>
                 <p>{message.timestamp}</p>
               </div>
             )

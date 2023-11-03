@@ -8,12 +8,16 @@ const ViewUsrShrtcuts = ({
   setViewOwnProfile,
   setViewedProfileID,
   setUserID,
+  newFriendReqs,
+  unreadMessages,
 }: {
   setUserSignInStatus: Function;
   switchDispUserValue: Function;
   setViewOwnProfile: Function;
   setViewedProfileID: Function;
   setUserID: Function;
+  newFriendReqs: number;
+  unreadMessages: number;
 }) => {
   const navigate = useNavigate();
   const signOUt = () => {
@@ -34,17 +38,17 @@ const ViewUsrShrtcuts = ({
     switchDispUserValue();
     navigate("/ProfileBookListDisplay");
   };
-  const viewFriends=()=>{
-     switchDispUserValue();
-     navigate("/friends");
+  const viewFriends = () => {
+    switchDispUserValue();
+    navigate("/friends");
   };
   const viewFriendRequests = () => {
-     switchDispUserValue();
-     navigate("/friendRequests");
+    switchDispUserValue();
+    navigate("/friendRequests");
   };
   const viewMessages = () => {
-     switchDispUserValue();
-     navigate("/messages");
+    switchDispUserValue();
+    navigate("/messages");
   };
   return (
     <ul className="bg-white w-52 rounded-md absolute top-16 right-10 px-4 py-2 cursor-pointer">
@@ -58,10 +62,10 @@ const ViewUsrShrtcuts = ({
         Friends
       </li>
       <li className="hover:bg-slate-400" onClick={viewFriendRequests}>
-        Friend requests
+        Friend requests {newFriendReqs > 0 ? `(${newFriendReqs})` : null}
       </li>
       <li className="hover:bg-slate-400" onClick={viewMessages}>
-        Messages
+        Messages {unreadMessages > 0 ? `(${unreadMessages})` : null}
       </li>
       <li className="hover:bg-slate-400" onClick={signOUt}>
         Sign out

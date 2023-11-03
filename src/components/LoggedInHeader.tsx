@@ -15,15 +15,15 @@ import RouteSwitch from "../RouteSwitch";
 const LoggedInHeader = ({
   setUserSignInStatus,
   switchDispUserValue,
+  newFriendReqs,
+  unreadMessages,
 }: {
   setUserSignInStatus: Function;
   switchDispUserValue: Function;
+  newFriendReqs: number;
+  unreadMessages:number;
 }) => {
-  function signOutUser() {
-    // Sign out of Firebase.
-    signOut(getAuth());
-    setUserSignInStatus(false);
-  }
+
   const navigate = useNavigate();
   const userImg = getAuth().currentUser?.photoURL || userDefaultImage;
   const usrFrstNm = getAuth().currentUser?.displayName!.split(" ")[0];
@@ -31,6 +31,7 @@ const LoggedInHeader = ({
     <div className="text-white absolute top-0 w-screen flex justify-between">
       <div className="flex">
         <img src={icon} className="rounded-full  w-9 h-9 ml-2 my-2" alt="" />
+
         <h2
           className="my-3 text-3xl font-Pacifico cursor-pointer hover:underline"
           onClick={() => {
@@ -46,8 +47,15 @@ const LoggedInHeader = ({
         onClick={() => switchDispUserValue()}
       >
         <li className="mx-4 font-Lobster">{usrFrstNm}</li>
-        <li>
+        <li className="relative">
           <img src={userImg} alt="" className="w-11 h-11 rounded-full" />
+          {newFriendReqs + unreadMessages > 0 ? (
+            <p className=" absolute top-0 right-0 bg-red-600 text-white rounded-full w-6 h-6 text-center">
+              {newFriendReqs + unreadMessages < 9
+                ? `${newFriendReqs + unreadMessages}`
+                :"9+"}
+            </p>
+          ) : null}
         </li>
         <li>
           <img src={arrow} alt="" className="w-4 m-4 mt-2" />

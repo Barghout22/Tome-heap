@@ -55,16 +55,35 @@ export const userDefaultImage =
   "https://firebasestorage.googleapis.com/v0/b/tome-heap.appspot.com/o/userDefaultImage.png?alt=media&token=ae155369-f1fc-4c82-93fc-12f489301aa7";
 
 const RouteSwitch = () => {
-useEffect(()=>{
-      signOut(getAuth());
-      setUserSignInStatus(false);
-      if (getAuth().currentUser){
-        getDocs(query(collection(getFirestore(),`user-${getAuth().currentUser?.uid}-friendReqs`),where("viewed","==",false))).then(results=>{
-          setNewFriendReqs(results.docs.length);
-        })
+  useEffect(() => {
+    if (getAuth().currentUser) {
+      getDocs(
+        query(
+          collection(
+            getFirestore(),
+            `user-${getAuth().currentUser?.uid}-friendReqs`
+          ),
+          where("viewed", "==", false)
+        )
+      ).then((results) => {
+        setNewFriendReqs(results.docs.length);
+      });
+      getDocs(
+        query(
+          collection(
+            getFirestore(),
+            `user-${getAuth().currentUser?.uid}-messages`
+          ),
+          where("read", "==", false)
+        )
+      ).then((results) => {
+        setUnreadMessages(results.docs.length);
+        console.log(unreadMessages);
+        
+      });
+    }
+  }, []);
 
-      }
-},[])
   const [userSignInStatus, setUserSignInStatus] = useState(false); //tells the header if the user is signed in
   const [logInStatus, setLogInStatus] = useState("none"); //tells the page whether to show a sign up or log in form
   const [searchTerm, setSearchTerm] = useState<string>(" "); //used to search by a book name or category
@@ -73,7 +92,7 @@ useEffect(()=>{
   const [userID, setUserID] = useState("none"); //used for getting the booklist of a specific user to display it
   const [viewOwnProfile, setViewOwnProfile] = useState(false); //tells profile component if the profile visited is the current user prof
   const [viewedProfileID, setViewedProfileID] = useState(" "); //provides the profile id for the visited profile to the prof. component
-// bookData state is set when user clicks on a specific book in a book list and used to display that book in the single book component
+  // bookData state is set when user clicks on a specific book in a book list and used to display that book in the single book component
   const [bookData, setBookData] = useState<BookInfo>({
     id: " ",
     bookName: " ",
@@ -82,7 +101,9 @@ useEffect(()=>{
     description: " ",
     imageSrc: " ",
   });
-  const [newFriendReqs,setNewFriendReqs]= useState(0)
+  const [newFriendReqs, setNewFriendReqs] = useState(0);
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
 
   const switchDispUserValue = () => {
     setDispUserShrtcutMenu(!dispUserShrtcutMenu);
@@ -93,6 +114,8 @@ useEffect(()=>{
         <LoggedInHeader
           setUserSignInStatus={setUserSignInStatus}
           switchDispUserValue={switchDispUserValue}
+          newFriendReqs={newFriendReqs}
+          unreadMessages={unreadMessages}
         />
       ) : (
         <LoggedOutHeader setLogInStatus={setLogInStatus} />
@@ -111,6 +134,8 @@ useEffect(()=>{
           setViewOwnProfile={setViewOwnProfile}
           setViewedProfileID={setViewedProfileID}
           setUserID={setUserID}
+          newFriendReqs={newFriendReqs}
+          unreadMessages={unreadMessages}
         />
       )}
       <Routes>
@@ -122,7 +147,7 @@ useEffect(()=>{
         />
         <Route path="/friends" element={<FriendListDisp />} />
         <Route path="/friendRequests" element={<FriendRequestDisp />} />
-        <Route path="/messages" element={<MessagesDisp  />} />
+        <Route path="/messages" element={<MessagesDisp />} />
         <Route path="/userChat" element={<SingleChatDisp userID={userID} />} />
 
         <Route
