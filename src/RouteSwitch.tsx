@@ -14,6 +14,7 @@ import FriendListDisp from "./components/friendListDisp";
 import FriendRequestDisp from "./components/friendRequestDisp";
 import MessagesDisp from "./components/messagesDisp";
 import ReviewsDisp from "./components/reviewsDisp";
+import SingleChatDisp from "./components/singleChatDisp";
 //
 import { BookInfo } from "./components/BookListView";
 import { initializeApp } from "firebase/app";
@@ -31,6 +32,9 @@ import {
   updateDoc,
   doc,
   serverTimestamp,
+  getDoc,
+  getDocs,
+  where,
 } from "firebase/firestore";
 
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
@@ -54,6 +58,12 @@ const RouteSwitch = () => {
 useEffect(()=>{
       signOut(getAuth());
       setUserSignInStatus(false);
+      if (getAuth().currentUser){
+        getDocs(query(collection(getFirestore(),`user-${getAuth().currentUser?.uid}-friendReqs`),where("viewed","==",false))).then(results=>{
+          setNewFriendReqs(results.docs.length);
+        })
+
+      }
 },[])
   const [userSignInStatus, setUserSignInStatus] = useState(false); //tells the header if the user is signed in
   const [logInStatus, setLogInStatus] = useState("none"); //tells the page whether to show a sign up or log in form
@@ -72,6 +82,7 @@ useEffect(()=>{
     description: " ",
     imageSrc: " ",
   });
+  const [newFriendReqs,setNewFriendReqs]= useState(0)
 
   const switchDispUserValue = () => {
     setDispUserShrtcutMenu(!dispUserShrtcutMenu);
@@ -111,12 +122,13 @@ useEffect(()=>{
         />
         <Route path="/friends" element={<FriendListDisp />} />
         <Route path="/friendRequests" element={<FriendRequestDisp />} />
-        <Route path="/messages" element={<MessagesDisp />} />
+        <Route path="/messages" element={<MessagesDisp  />} />
+        <Route path="/userChat" element={<SingleChatDisp userID={userID} />} />
+
         <Route
           path="/reviewsDisplay"
           element={<ReviewsDisp userID={userID} setBookData={setBookData} />}
         />
-
         <Route
           path="/profile"
           element={

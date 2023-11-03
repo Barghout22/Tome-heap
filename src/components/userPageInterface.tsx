@@ -108,6 +108,7 @@ const UserpageInterface = ({
   });
 
   const viewBooks = () => {
+    setUserID(`${viewedUserId}`);
     navigate("/ProfileBookListDisplay");
   };
   const viewReviews = () => {
@@ -116,7 +117,7 @@ const UserpageInterface = ({
   };
   const sendMessage = () => {
     setUserID(`${viewedUserId}`);
-    navigate("/messages");
+    navigate("/userChat");
   };
   const removeFriend = async () => {
     try {
@@ -242,7 +243,7 @@ const UserpageInterface = ({
               className="text-black rounded-full  mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
               onClick={viewReviews}
             >
-              {username.split(" ")[0]}'s book reviews
+              {username.split(" ")[0]}'s reviews
             </p>
             <p
               className="text-black rounded-full mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
