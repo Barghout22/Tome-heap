@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import icon from "../image_resources/tome-heap-logo_thumbnail.ico";
 import ExitBtn from "../image_resources/exitBtn.webp";
-import { getFirestore, setDoc, doc } from "firebase/firestore";
+import {
+  getFirestore,
+  setDoc,
+  doc,
+  getDocs,
+  query,
+  collection,
+  where,
+} from "firebase/firestore";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -16,10 +24,14 @@ const LogInPopUp = ({
   status,
   setLogInStatus,
   setUserSignInStatus,
+  setNewFriendReqs,
+  setUnreadMessages,
 }: {
   status: string;
   setLogInStatus: Function;
   setUserSignInStatus: Function;
+  setNewFriendReqs: Function;
+  setUnreadMessages: Function;
 }) => {
   const signUp = status === "sign up" ? true : false;
   const [userFirstName, setUserFirstName] = useState(" ");
@@ -50,6 +62,29 @@ const LogInPopUp = ({
       },
       { merge: true }
     );
+
+     await getDocs(
+       query(
+         collection(
+           getFirestore(),
+           `user-${getAuth().currentUser?.uid}-friendReqs`
+         ),
+         where("viewed", "==", false)
+       )
+     ).then((results) => {
+       setNewFriendReqs(results.docs.length);
+     });
+     await getDocs(
+       query(
+         collection(
+           getFirestore(),
+           `user-${getAuth().currentUser?.uid}-messages`
+         ),
+         where("read", "==", false)
+       )
+     ).then((results) => {
+       setUnreadMessages(results.docs.length);
+     });
   }
 
   const handleErrors = (message: string) => {
@@ -113,9 +148,30 @@ const LogInPopUp = ({
   async function signInWithEmail(email: string, pwd: string) {
     try {
       await signInWithEmailAndPassword(auth, email, pwd).then(() => {
-        // console.log(auth.currentUser?.displayName);
         setLogInStatus("none");
         setUserSignInStatus(true);
+      });
+      await getDocs(
+        query(
+          collection(
+            getFirestore(),
+            `user-${getAuth().currentUser?.uid}-friendReqs`
+          ),
+          where("viewed", "==", false)
+        )
+      ).then((results) => {
+        setNewFriendReqs(results.docs.length);
+      });
+      await getDocs(
+        query(
+          collection(
+            getFirestore(),
+            `user-${getAuth().currentUser?.uid}-messages`
+          ),
+          where("read", "==", false)
+        )
+      ).then((results) => {
+        setUnreadMessages(results.docs.length);
       });
     } catch (e: any) {
       handleErrors(e.message);

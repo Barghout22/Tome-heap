@@ -20,25 +20,6 @@ import { BookInfo } from "./components/BookListView";
 import { initializeApp } from "firebase/app";
 import { getAuth, signOut } from "firebase/auth";
 
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  query,
-  orderBy,
-  limit,
-  onSnapshot,
-  setDoc,
-  updateDoc,
-  doc,
-  serverTimestamp,
-  getDoc,
-  getDocs,
-  where,
-} from "firebase/firestore";
-
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import { getPerformance } from "firebase/performance";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -55,34 +36,7 @@ export const userDefaultImage =
   "https://firebasestorage.googleapis.com/v0/b/tome-heap.appspot.com/o/userDefaultImage.png?alt=media&token=ae155369-f1fc-4c82-93fc-12f489301aa7";
 
 const RouteSwitch = () => {
-  useEffect(() => {
-    if (getAuth().currentUser) {
-      getDocs(
-        query(
-          collection(
-            getFirestore(),
-            `user-${getAuth().currentUser?.uid}-friendReqs`
-          ),
-          where("viewed", "==", false)
-        )
-      ).then((results) => {
-        setNewFriendReqs(results.docs.length);
-      });
-      getDocs(
-        query(
-          collection(
-            getFirestore(),
-            `user-${getAuth().currentUser?.uid}-messages`
-          ),
-          where("read", "==", false)
-        )
-      ).then((results) => {
-        setUnreadMessages(results.docs.length);
-        console.log(unreadMessages);
-        
-      });
-    }
-  }, []);
+ 
 
   const [userSignInStatus, setUserSignInStatus] = useState(false); //tells the header if the user is signed in
   const [logInStatus, setLogInStatus] = useState("none"); //tells the page whether to show a sign up or log in form
@@ -125,6 +79,8 @@ const RouteSwitch = () => {
           status={logInStatus}
           setLogInStatus={setLogInStatus}
           setUserSignInStatus={setUserSignInStatus}
+          setNewFriendReqs={setNewFriendReqs}
+          setUnreadMessages={setUnreadMessages}
         />
       )}
       {userSignInStatus && dispUserShrtcutMenu && (
