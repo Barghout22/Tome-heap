@@ -116,7 +116,7 @@ const RouteSwitch = () => {
             />
           }
         />
-        <Route path="/messages" element={<MessagesDisp />} />
+        <Route path="/messages" element={<MessagesDisp setUserID={setUserID}/>} />
         <Route path="/userChat" element={<SingleChatDisp userID={userID} />} />
 
         <Route
