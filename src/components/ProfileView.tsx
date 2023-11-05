@@ -256,14 +256,15 @@ const ProfileView = ({
             )}
           </div>
         </div>
-        {!viewOwnProfile && (
-          <UserpageInterface
-            viewedUserId={currentUser.userID}
-            viewedUsername={currentUser.username}
-            viewedUserProfilePic={currentUser.profilePicture!}
-            setUserID={setUserID}
-          />
-        )}
+        {!viewOwnProfile &&
+          currentUser.userID&&(
+            <UserpageInterface
+              viewedUserId={currentUser.userID}
+              viewedUsername={currentUser.username}
+              viewedUserProfilePic={currentUser.profilePicture!}
+              setUserID={setUserID}
+            />
+          )}
       </div>
     </>
   );

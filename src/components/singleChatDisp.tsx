@@ -47,7 +47,7 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
   const [userMessages, setUserMessages] = useState<message[] | undefined>();
   const [draftMessage, setDraftMessage] = useState(" ");
   const [textAreaVal, setTextAreaVal] = useState("");
-  const bottomRef = useRef<null | HTMLDivElement>(null);
+  const bottomRef = useRef<null | HTMLFormElement>(null);
   useEffect(() => {
     getDoc(doc(getFirestore(), "usersData", `user-${viewedUserId}`)).then(
       (returnVal) => {
@@ -71,8 +71,7 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
           getFirestore(),
           `user-${getAuth().currentUser?.uid}-messages`
         ),
-        where("otherUserId", "==", viewedUserId),
-        limit(25)
+        where("otherUserId", "==", viewedUserId)
       )
     ).then((results) => {
       if (results.docs.length > 0) {
@@ -122,10 +121,13 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
           return timestampA - timestampB;
         });
         setUserMessages(placeHolderArr);
-        bottomRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
+        
       }
     });
   }, []);
+  useEffect(()=>{
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  },[userMessages])
 
   const saveDraftMsg = (e: any) => {
     setDraftMessage(e.target.value);
@@ -194,13 +196,13 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
   return (
     <div className="bg-gray-800 min-h-screen text-white font-Lobster flex flex-col pt-14 relative ">
       <p
-        className="bg-gray-800 p-4 text-2xl hover:underline hover:cursor-pointer shadow-xl fixed w-screen top-4"
+        className="bg-gray-800 p-4 text-2xl hover:underline hover:cursor-pointer shadow-xl fixed w-screen top-0"
         onClick={goToAllMessages}
       >
         go back to all messages
       </p>
       {userMessages && userMessages.length > 0 && (
-        <div className="flex flex-col justify-around" ref={bottomRef}>
+        <div className="flex flex-col justify-around">
           {userMessages.map((message) =>
             message.messageStatus === "received" ? (
               <div
@@ -230,7 +232,11 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
           )}
         </div>
       )}
-      <form onSubmit={saveNewMsg} className="m-12 flex flex-col">
+      <form
+        onSubmit={saveNewMsg}
+        className="m-12 flex flex-col"
+        ref={bottomRef}
+      >
         <textarea
           className="bg-gray-800 border-gray-200 border-solid border-2 w-11/12 focus:cursor-text focus:border-3"
           name="new_msg"

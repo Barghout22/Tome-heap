@@ -97,7 +97,15 @@ const RouteSwitch = () => {
             <App setSearchTerm={setSearchTerm} setSearchType={setSearchType} />
           }
         />
-        <Route path="/friends" element={<FriendListDisp />} />
+        <Route
+          path="/friends"
+          element={
+            <FriendListDisp
+              setViewOwnProfile={setViewOwnProfile}
+              setViewedProfileID={setViewedProfileID}
+            />
+          }
+        />
         <Route
           path="/friendRequests"
           element={

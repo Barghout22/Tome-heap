@@ -176,7 +176,7 @@ const FriendRequestDisp = ({
               <img
                 src={request.profilePicture}
                 alt=""
-                className="w-11 h-11 rounded-full"
+                className="w-14 h-14 rounded-full"
               />
               <p
                 className=" 
@@ -192,7 +192,7 @@ const FriendRequestDisp = ({
               {request.status === "sent" ? (
                 <button
                   onClick={() => cancelRequest(request.userId)}
-                  className="text-black rounded-full mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
+                  className="text-black rounded-full mt-4 text-xl font-semibold w-48 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
                 >
                   cancel request
                 </button>
@@ -206,13 +206,13 @@ const FriendRequestDisp = ({
                         request.profilePicture
                       )
                     }
-                    className="text-black rounded-full mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
+                    className="text-black rounded-full mt-4 text-xl font-semibold w-48 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
                   >
                     accept request{" "}
                   </button>
                   <button
                     onClick={() => cancelRequest(request.userId)}
-                    className="text-black rounded-full mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
+                    className="text-black rounded-full mt-4 text-xl font-semibold w-48 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
                   >
                     reject request
                   </button>

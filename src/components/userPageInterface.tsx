@@ -86,7 +86,6 @@ const UserpageInterface = ({
         });
       }
     );
-
     retrieveFriendStatus(currentUserId!, viewedUserId).then((friendStatus) => {
       setFriendStatus(friendStatus);
       if (!friendStatus) {
@@ -95,7 +94,7 @@ const UserpageInterface = ({
         );
       }
     });
-  }, []);
+  }, [viewedUserId]);
 
   const viewBooks = () => {
     setUserID(`${viewedUserId}`);
@@ -227,10 +226,10 @@ const UserpageInterface = ({
   };
 
   return (
-    getAuth().currentUser && (
+    getAuth().currentUser &&(
       <>
         {friendStatus && (
-          <div className="bg-gray-800 flex sm:flex-row justify-start items-center mt-9 flex-col">
+          <div className="bg-gray-800 flex sm:flex-row justify-start items-center mt-9 flex-wrap">
             <p
               className="text-black rounded-full mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
               onClick={viewBooks}

@@ -82,21 +82,27 @@ const ReviewsDisp = ({
   };
   return (
     <div className="bg-gray-800 min-h-screen text-white font-Lobster flex flex-col pt-14 ">
-      <h1>{username?.split(" ")[0]} reviews</h1>
+      <h1 className="text-4xl texit-bold ml-2">
+        {username?.split(" ")[0]} reviews
+      </h1>
       {reviewList ? (
         reviewList.length > 0 ? (
           <div>
             {reviewList.map((review) => (
-              <div key={review.bookId}>
-                <p
-                  onClick={() => goToBook(review.bookId)}
-                  className="hover:underline hover:cursor-pointer"
-                >
-                  {review.bookName}
+              <div key={review.bookId} className="ml-4 mt-4">
+                <p className="text-2xl mb-2"> 
+                  reviewed{" "}
+                  <span
+                    onClick={() => goToBook(review.bookId)}
+                    className="hover:underline hover:cursor-pointer"
+                  >
+                    {" "}
+                    {review.bookName}{" "}
+                  </span>
+                  on {review.reviewDate}
                 </p>
-                <p>on {review.reviewDate}</p>
-                <p>{review.rating} out of 5</p>
-                <p>{review.reviewBody}</p>
+                <p className="text-2xl">{review.reviewBody}</p>
+                <p className="text-2xl">{review.rating} out of 5</p>
               </div>
             ))}
           </div>
