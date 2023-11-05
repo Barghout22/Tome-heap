@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import {
   getFirestore,
@@ -29,8 +30,10 @@ interface message {
   read: boolean;
 }
 import uniqid from "uniqid";
+import { Navigate } from "react-router-dom";
 
 const SingleChatDisp = ({ userID }: { userID: string }) => {
+  const navigate = useNavigate();
   const viewedUserId = userID;
   const CurrentUserId = getAuth().currentUser?.uid;
   const [viewedUser, setViewedUser] = useState({
@@ -43,6 +46,8 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
   });
   const [userMessages, setUserMessages] = useState<message[] | undefined>();
   const [draftMessage, setDraftMessage] = useState(" ");
+  const [textAreaVal, setTextAreaVal] = useState("");
+  const bottomRef = useRef<null | HTMLDivElement>(null);
   useEffect(() => {
     getDoc(doc(getFirestore(), "usersData", `user-${viewedUserId}`)).then(
       (returnVal) => {
@@ -92,10 +97,9 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
                 getFirestore(),
                 `user-${getAuth().currentUser?.uid}-messages`
               ),
-             
-                where("read", "==", false),
-                where("otherUserId", "==", viewedUserId)
-              
+
+              where("read", "==", false),
+              where("otherUserId", "==", viewedUserId)
             )
           ).then((results) =>
             results.forEach((result) => {
@@ -118,14 +122,19 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
           return timestampA - timestampB;
         });
         setUserMessages(placeHolderArr);
+        bottomRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
       }
     });
-  });
+  }, []);
+
   const saveDraftMsg = (e: any) => {
     setDraftMessage(e.target.value);
+    setTextAreaVal(e.target.value);
   };
   const saveNewMsg = async (e: any) => {
     e.preventDefault();
+    setDraftMessage("");
+    setTextAreaVal("");
     let messagePlaceHolder = userMessages;
     if (messagePlaceHolder) {
       messagePlaceHolder.push({
@@ -179,11 +188,19 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
       read: false,
     });
   };
-
+  const goToAllMessages = () => {
+    navigate("/messages");
+  };
   return (
-    <div className="bg-gray-800 min-h-screen text-white font-Lobster flex flex-col pt-14 ">
+    <div className="bg-gray-800 min-h-screen text-white font-Lobster flex flex-col pt-14 relative ">
+      <p
+        className="bg-gray-800 p-4 text-2xl hover:underline hover:cursor-pointer shadow-xl fixed w-screen top-4"
+        onClick={goToAllMessages}
+      >
+        go back to all messages
+      </p>
       {userMessages && userMessages.length > 0 && (
-        <div className="flex flex-col justify-around">
+        <div className="flex flex-col justify-around" ref={bottomRef}>
           {userMessages.map((message) =>
             message.messageStatus === "received" ? (
               <div
@@ -215,11 +232,12 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
       )}
       <form onSubmit={saveNewMsg} className="m-12 flex flex-col">
         <textarea
-          className="bg-gray-800 border-gray-200 border-solid border-2 w-11/12"
+          className="bg-gray-800 border-gray-200 border-solid border-2 w-11/12 focus:cursor-text focus:border-3"
           name="new_msg"
           id="new_msg"
           cols={30}
           rows={10}
+          value={textAreaVal}
           placeholder="new message"
           required
           onChange={saveDraftMsg}

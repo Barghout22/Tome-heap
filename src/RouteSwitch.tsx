@@ -20,7 +20,6 @@ import { BookInfo } from "./components/BookListView";
 import { initializeApp } from "firebase/app";
 import { getAuth, signOut } from "firebase/auth";
 
-
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTHDOMAIN,
@@ -36,8 +35,6 @@ export const userDefaultImage =
   "https://firebasestorage.googleapis.com/v0/b/tome-heap.appspot.com/o/userDefaultImage.png?alt=media&token=ae155369-f1fc-4c82-93fc-12f489301aa7";
 
 const RouteSwitch = () => {
- 
-
   const [userSignInStatus, setUserSignInStatus] = useState(false); //tells the header if the user is signed in
   const [logInStatus, setLogInStatus] = useState("none"); //tells the page whether to show a sign up or log in form
   const [searchTerm, setSearchTerm] = useState<string>(" "); //used to search by a book name or category
@@ -57,7 +54,6 @@ const RouteSwitch = () => {
   });
   const [newFriendReqs, setNewFriendReqs] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(0);
-
 
   const switchDispUserValue = () => {
     setDispUserShrtcutMenu(!dispUserShrtcutMenu);
@@ -102,7 +98,16 @@ const RouteSwitch = () => {
           }
         />
         <Route path="/friends" element={<FriendListDisp />} />
-        <Route path="/friendRequests" element={<FriendRequestDisp />} />
+        <Route
+          path="/friendRequests"
+          element={
+            <FriendRequestDisp
+              setNewFriendReqs={setNewFriendReqs}
+              setViewOwnProfile={setViewOwnProfile}
+              setViewedProfileID={setViewedProfileID}
+            />
+          }
+        />
         <Route path="/messages" element={<MessagesDisp />} />
         <Route path="/userChat" element={<SingleChatDisp userID={userID} />} />
 

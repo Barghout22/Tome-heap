@@ -10,19 +10,6 @@ import {
 } from "firebase/firestore";
 import { userDefaultImage } from "../RouteSwitch";
 
-const getUsers = async (currentUserId: string, viewedUserId: string) => {
-  try {
-    const currentUser = await getDoc(
-      doc(getFirestore(), "usersData", `user-${currentUserId}`)
-    );
-    const viewedUser = await getDoc(
-      doc(getFirestore(), "usersData", `user-${viewedUserId}`)
-    );
-    return [currentUser.data(), viewedUser.data()];
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 const retrieveFriendStatus = async (
   currentUserId: string,
@@ -58,11 +45,13 @@ const retrieveFriendRequestStatus = async (
 
 const UserpageInterface = ({
   viewedUserId,
-  username,
+  viewedUsername,
+  viewedUserProfilePic,
   setUserID,
 }: {
-  viewedUserId: string;
-  username: string;
+  viewedUserId:string;
+  viewedUsername:string;
+  viewedUserProfilePic:string;
   setUserID: Function;
 }) => {
   const currentUserId = getAuth().currentUser?.uid;
@@ -75,28 +64,29 @@ const UserpageInterface = ({
     viewedUserId: currentUserId,
   });
   const [viewedUser, setViewedUser] = useState({
-    username: " ",
-    photoUrl: " ",
+    username: viewedUsername,
+    photoUrl: viewedUserProfilePic,
     userId: viewedUserId,
   });
 
   useEffect(() => {
-    getUsers(currentUserId!, viewedUserId).then((userData) => {
-      setCurrentUser({
-        username: userData![0]?.username,
-        photoUrl: userData![0]?.profilePicture
-          ? userData![0].profilePicture
-          : userDefaultImage,
-        viewedUserId: currentUserId,
-      });
-      setViewedUser({
-        username: userData![1]?.username,
-        photoUrl: userData![1]?.profilePicture
-          ? userData![1].profilePicture
-          : userDefaultImage,
-        userId: viewedUserId,
-      });
+    setViewedUser({
+      username: viewedUsername,
+      photoUrl: viewedUserProfilePic,
+      userId: viewedUserId,
     });
+    getDoc(doc(getFirestore(), "usersData", `user-${currentUserId}`)).then(
+      (user) => {
+        setCurrentUser({
+          username: user.data()?.username,
+          photoUrl: user.data()?.profilePicture
+            ? user.data()?.profilePicture
+            : userDefaultImage,
+          viewedUserId: currentUserId,
+        });
+      }
+    );
+
     retrieveFriendStatus(currentUserId!, viewedUserId).then((friendStatus) => {
       setFriendStatus(friendStatus);
       if (!friendStatus) {
@@ -105,7 +95,7 @@ const UserpageInterface = ({
         );
       }
     });
-  });
+  }, []);
 
   const viewBooks = () => {
     setUserID(`${viewedUserId}`);
@@ -149,8 +139,9 @@ const UserpageInterface = ({
           `user-${viewedUserId}`
         ),
         {
-          username: viewedUser.username,
-          profilePicture: viewedUser.photoUrl,
+          username: viewedUsername,
+          otherUserId: viewedUserId,
+          profilePicture: viewedUserProfilePic,
           status: "sent",
           viewed: true,
         }
@@ -163,6 +154,7 @@ const UserpageInterface = ({
         ),
         {
           username: currentUser.username,
+          otherUserId: currentUserId,
           profilePicture: currentUser.photoUrl,
           status: "received",
           viewed: false,
@@ -183,8 +175,11 @@ const UserpageInterface = ({
           `user-${viewedUserId}`
         ),
         {
-          username: viewedUser.username,
-          profilePicture: viewedUser.photoUrl,
+          username: viewedUsername,
+          otherUserId: viewedUserId,
+          profilePicture: viewedUserProfilePic
+            ? viewedUserProfilePic
+            : userDefaultImage,
           timeStamp: new Date().toLocaleString(),
         }
       );
@@ -196,7 +191,10 @@ const UserpageInterface = ({
         ),
         {
           username: currentUser.username,
-          profilePicture: currentUser.photoUrl,
+          otherUserId: currentUserId,
+          profilePicture: currentUser.photoUrl
+            ? currentUser.photoUrl
+            : userDefaultImage,
           timeStamp: new Date().toLocaleString(),
         }
       );
@@ -237,19 +235,19 @@ const UserpageInterface = ({
               className="text-black rounded-full mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
               onClick={viewBooks}
             >
-              {username.split(" ")[0]}'s books
+              {viewedUser.username.split(" ")[0]}'s books
             </p>
             <p
               className="text-black rounded-full  mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
               onClick={viewReviews}
             >
-              {username.split(" ")[0]}'s reviews
+              {viewedUser.username.split(" ")[0]}'s reviews
             </p>
             <p
               className="text-black rounded-full mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
               onClick={sendMessage}
             >
-              message {username.split(" ")[0]}
+              message {viewedUser.username.split(" ")[0]}
             </p>
             <p
               className="text-black rounded-full mt-4 text-3xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer "
