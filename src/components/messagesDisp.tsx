@@ -89,7 +89,7 @@ const MessagesDisp = ({
           {messages.map((message) =>
             message.read ? (
               <div
-                className="border-y-2 border-gray-300 font-semibold border-solid	text-gray-300 cursor-pointer hover:bg-slate-500"
+                className="border-y-2 border-gray-300 font-semibold border-dashed	text-gray-300 cursor-pointer hover:bg-slate-500"
                 key={message.otherUserId}
                 onClick={() => goToSingleChat(message.otherUserId)}
               >
@@ -108,7 +108,7 @@ const MessagesDisp = ({
               </div>
             ) : (
               <div
-                className="border-y-3	border-white font-bold border-solid	text-white cursor-pointer hover:bg-slate-500"
+                className="border-y-3	border-white font-bold border-dashed	text-white cursor-pointer hover:bg-slate-500"
                 key={message.otherUserId}
                 onClick={() => goToSingleChat(message.otherUserId)}
               >
