@@ -13,6 +13,7 @@ import {
   doc,
   serverTimestamp,
   getDocs,
+  where,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -27,11 +28,18 @@ interface message {
   timestamp: string;
   username: string;
 }
-const MessagesDisp = ({setUserID}:{setUserID:Function}) => {
-  const navigate=useNavigate()
+const MessagesDisp = ({
+  setUserID,
+  setUnreadMessages,
+}: {
+  setUserID: Function;
+  setUnreadMessages: Function;
+}) => {
+  const navigate = useNavigate();
   const currentUserId = getAuth().currentUser?.uid;
   const [messages, setMessages] = useState<message[] | undefined>();
   useEffect(() => {
+    setUnreadMessages(0);
     let placeHolderArr: message[] = [];
     getDocs(collection(getFirestore(), `user-${currentUserId}-messages`)).then(
       (messages) => {
@@ -69,10 +77,10 @@ const MessagesDisp = ({setUserID}:{setUserID:Function}) => {
       }
     );
   });
-const goToSingleChat=(userId:string)=>{
-     setUserID(`${userId}`);
-     navigate("/userChat");
-}
+  const goToSingleChat = (userId: string) => {
+    setUserID(`${userId}`);
+    navigate("/userChat");
+  };
   return (
     <div className="bg-gray-800 min-h-screen text-white font-Lobster flex flex-col pt-14 ">
       <h1 className="text-3xl font-bold">All messages</h1>
@@ -93,9 +101,10 @@ const goToSingleChat=(userId:string)=>{
                   />
                   <p className="text-2xl ml-2">{message.username}</p>
                 </div>
-                <p className="text-2xl mb-2 ml-4">
-                  {message.messageBody.slice(0, 30)}...
+                <p className="text-2xl mb-2 ml-5">
+                  {message.messageBody.slice(0, 30)} ...
                 </p>
+                <p className="text-2xl mb-2 ml-4"> {message.timestamp}</p>
               </div>
             ) : (
               <div
@@ -111,9 +120,10 @@ const goToSingleChat=(userId:string)=>{
                   />
                   <p className="text-2xl ml-2">{message.username}</p>
                 </div>
-                <p className="text-2xl mb-2 ml-4">
+                <p className="text-2xl mb-2 ml-5">
                   {message.messageBody.slice(0, 30)}...
                 </p>
+                <p className="text-2xl mb-2 ml-4"> {message.timestamp}</p>
               </div>
             )
           )}

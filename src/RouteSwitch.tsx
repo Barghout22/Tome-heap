@@ -116,7 +116,15 @@ const RouteSwitch = () => {
             />
           }
         />
-        <Route path="/messages" element={<MessagesDisp setUserID={setUserID}/>} />
+        <Route
+          path="/messages"
+          element={
+            <MessagesDisp
+              setUserID={setUserID}
+              setUnreadMessages={setUnreadMessages}
+            />
+          }
+        />
         <Route path="/userChat" element={<SingleChatDisp userID={userID} />} />
 
         <Route
