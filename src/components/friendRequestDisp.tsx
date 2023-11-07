@@ -28,7 +28,7 @@ const FriendRequestDisp = ({
 }: {
   setViewOwnProfile: Function;
   setViewedProfileID: Function;
-  setNewFriendReqs:Function;
+  setNewFriendReqs: Function;
 }) => {
   const navigate = useNavigate();
   const [friendReqs, setFriendReqs] = useState<FriendReq[]>();
@@ -83,9 +83,7 @@ const FriendRequestDisp = ({
           { viewed: true },
           { merge: true }
         );
-      }
-      )
-      
+      })
     );
   }, []);
   const acceptRequest = async (
@@ -124,12 +122,21 @@ const FriendRequestDisp = ({
           timeStamp: new Date().toLocaleString(),
         }
       );
-    await cancelRequest(otherUserId);
+      await cancelRequest(otherUserId);
     } catch (e) {
       console.error(e);
     }
   };
   const cancelRequest = async (otherUserId: string) => {
+    let placeHolderArr = friendReqs;
+    let index = placeHolderArr?.findIndex((val) => val.userId === otherUserId);
+    index! > -1 ? placeHolderArr?.splice(index!, 1) : null;
+    setFriendReqs(undefined);
+
+    if (placeHolderArr!.length > 0) {
+      setFriendReqs(placeHolderArr);
+      console.log(friendReqs, friendReqs?.length);
+    }
     try {
       await deleteDoc(
         doc(
@@ -145,12 +152,6 @@ const FriendRequestDisp = ({
           `user-${currentUserId}`
         )
       );
-      let placeHolderArr = friendReqs;
-      let index = placeHolderArr?.findIndex(
-        (val) => val.userId === otherUserId
-      );
-      placeHolderArr?.splice(index!, 1);
-      setFriendReqs(placeHolderArr);
     } catch (e) {
       console.error(e);
     }

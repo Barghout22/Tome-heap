@@ -36,6 +36,7 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
   const navigate = useNavigate();
   const viewedUserId = userID;
   const CurrentUserId = getAuth().currentUser?.uid;
+  const [messagesLoaded, setMessagesLoaded] = useState(false);
   const [viewedUser, setViewedUser] = useState({
     username: " ",
     profilePic: " ",
@@ -47,7 +48,9 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
   const [userMessages, setUserMessages] = useState<message[] | undefined>();
   const [draftMessage, setDraftMessage] = useState(" ");
   const [textAreaVal, setTextAreaVal] = useState("");
+  const [reachOldestMssgs, setReachOldestMssgs] = useState(false);
   const bottomRef = useRef<null | HTMLFormElement>(null);
+
   useEffect(() => {
     getDoc(doc(getFirestore(), "usersData", `user-${viewedUserId}`)).then(
       (returnVal) => {
@@ -71,7 +74,9 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
           getFirestore(),
           `user-${getAuth().currentUser?.uid}-messages`
         ),
-        where("otherUserId", "==", viewedUserId)
+        where("otherUserId", "==", viewedUserId),
+        orderBy("timestamp", "desc"),
+        limit(6)
       )
     ).then((results) => {
       if (results.docs.length > 0) {
@@ -121,13 +126,18 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
           return timestampA - timestampB;
         });
         setUserMessages(placeHolderArr);
-        
       }
     });
   }, []);
-  useEffect(()=>{
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  },[userMessages])
+
+
+  useEffect(() => {
+    if (userMessages&&userMessages.length>0&&!messagesLoaded) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+          setMessagesLoaded(true);
+
+    }
+  }, [userMessages]);
 
   const saveDraftMsg = (e: any) => {
     setDraftMessage(e.target.value);
@@ -190,6 +200,52 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
       read: false,
     });
   };
+
+  const loadMoreMessages = async () => {
+    let placeHolderArr: message[] = [];
+    const reqNoOfMessages = userMessages!.length + 6;
+    getDocs(
+      query(
+        collection(
+          getFirestore(),
+          `user-${getAuth().currentUser?.uid}-messages`
+        ),
+        where("otherUserId", "==", viewedUserId),
+        orderBy("timestamp", "desc"),
+        limit(reqNoOfMessages)
+      )
+    ).then((results) => {
+      if (results.docs.length > userMessages!.length) {
+        results.docs.forEach((result) => {
+          let timestring = result.data().timestamp.seconds
+            ? result.data().timestamp.seconds * 1000 +
+              result.data().timestamp.nanoseconds / 1000000
+            : result.data().timestamp.nanoseconds / 1000000;
+          placeHolderArr!.unshift({
+            username: result.data().username,
+            otherUserId: result.data().otherUserId,
+            otherUserProfilePic: result.data().otherUserProfilePic,
+            messageBody: result.data().messageBody,
+            timestamp: new Date(timestring).toLocaleString(),
+            messageStatus: result.data().messageStatus,
+            read: true,
+          });
+        });
+        placeHolderArr.sort(function (a, b) {
+          let timestampA = new Date(a.timestamp).valueOf();
+          let timestampB = new Date(b.timestamp).valueOf();
+          return timestampA - timestampB;
+        });
+        setUserMessages(placeHolderArr);
+        results.docs.length < reqNoOfMessages
+          ? setReachOldestMssgs(true)
+          : null;
+      } else {
+        setReachOldestMssgs(true);
+      }
+    });
+  };
+
   const goToAllMessages = () => {
     navigate("/messages");
   };
@@ -203,6 +259,20 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
       </p>
       {userMessages && userMessages.length > 0 && (
         <div className="flex flex-col justify-around">
+          {reachOldestMssgs && (
+            <p className="self-center text-gray-300 mb-4 mt-4 border-b-2 border-solid border-gray-300">
+              no more messages to show
+            </p>
+          )}
+          {!reachOldestMssgs && (
+            <button
+              className="text-black rounded-full  mt-4 text-xl font-semibold w-52 mb-8 mx-2 text-center bg-white transition-all hover:text-white hover:bg-black cursor-pointer self-center"
+              onClick={loadMoreMessages}
+            >
+              {" "}
+              load more messages
+            </button>
+          )}
           {userMessages.map((message) =>
             message.messageStatus === "received" ? (
               <div

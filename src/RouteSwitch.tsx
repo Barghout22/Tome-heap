@@ -88,6 +88,8 @@ const RouteSwitch = () => {
           setUserID={setUserID}
           newFriendReqs={newFriendReqs}
           unreadMessages={unreadMessages}
+          setNewFriendReqs={setNewFriendReqs}
+          setUnreadMessages={setUnreadMessages}
         />
       )}
       <Routes>

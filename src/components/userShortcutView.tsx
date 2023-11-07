@@ -10,6 +10,8 @@ const ViewUsrShrtcuts = ({
   setUserID,
   newFriendReqs,
   unreadMessages,
+  setNewFriendReqs,
+  setUnreadMessages,
 }: {
   setUserSignInStatus: Function;
   switchDispUserValue: Function;
@@ -18,12 +20,16 @@ const ViewUsrShrtcuts = ({
   setUserID: Function;
   newFriendReqs: number;
   unreadMessages: number;
+  setNewFriendReqs: Function;
+  setUnreadMessages: Function;
 }) => {
   const navigate = useNavigate();
   const signOUt = () => {
     signOut(getAuth());
     setUserSignInStatus(false);
     switchDispUserValue();
+    setNewFriendReqs(0);
+    setUnreadMessages(0);
     navigate("/");
   };
   const goToProfile = () => {
