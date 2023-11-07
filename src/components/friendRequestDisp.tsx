@@ -128,15 +128,11 @@ const FriendRequestDisp = ({
     }
   };
   const cancelRequest = async (otherUserId: string) => {
-    let placeHolderArr = friendReqs;
-    let index = placeHolderArr?.findIndex((val) => val.userId === otherUserId);
-    index! > -1 ? placeHolderArr?.splice(index!, 1) : null;
-    setFriendReqs(undefined);
+    const updatedFriendReqs = friendReqs?.filter(
+      (request) => request.userId !== otherUserId
+    );
+    setFriendReqs(updatedFriendReqs);
 
-    if (placeHolderArr!.length > 0) {
-      setFriendReqs(placeHolderArr);
-      console.log(friendReqs, friendReqs?.length);
-    }
     try {
       await deleteDoc(
         doc(
