@@ -39,10 +39,11 @@ const MessagesDisp = ({
   const currentUserId = getAuth().currentUser?.uid;
   const [messages, setMessages] = useState<message[] | undefined>();
   useEffect(() => {
-    setUnreadMessages(0);
-    let placeHolderArr: message[] = [];
-    getDocs(collection(getFirestore(), `user-${currentUserId}-messages`)).then(
-      (messages) => {
+       setUnreadMessages(0);
+      let placeHolderArr: message[] = [];
+      getDocs(
+        collection(getFirestore(), `user-${currentUserId}-messages`)
+      ).then((messages) => {
         messages.forEach((message) => {
           let timestring = message.data().timestamp.seconds
             ? message.data().timestamp.seconds * 1000 +
@@ -74,9 +75,9 @@ const MessagesDisp = ({
           }
           setMessages(filteredPlaceholderArr);
         });
-      }
-    );
-  });
+      });
+    
+  }, []);
   const goToSingleChat = (userId: string) => {
     setUserID(`${userId}`);
     navigate("/userChat");
