@@ -55,7 +55,7 @@ Tools used for this project:
 
 ## SreenShots
 
-![Homepage]("Screenshots/Sreenshot_1.png")
+![Homepage]("/Screenshots/Sreenshot_1.png")
 ![Search Result]("Screenshots/Sreenshot_2.png")
 ![Reviews on book]("Screenshots/Sreenshot_3.png")
 ![more reviews]("Screenshots/Sreenshot_4.png")
