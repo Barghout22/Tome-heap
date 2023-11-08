@@ -23,18 +23,11 @@ import { getAuth, signOut } from "firebase/auth";
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTHDOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECTID,
+  projectId: "tome-heap",
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGEBUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGINGSENDERID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
-
-console.log(import.meta.env.VITE_FIREBASE_API_KEY);
-console.log(import.meta.env.VITE_FIREBASE_AUTHDOMAIN);
-console.log(import.meta.env.VITE_FIREBASE_PROJECTID);
-console.log(import.meta.env.VITE_FIREBASE_STORAGEBUCKET);
-console.log(import.meta.env.VITE_FIREBASE_MESSAGINGSENDERID);
-console.log(import.meta.env.VITE_FIREBASE_APP_ID);
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
