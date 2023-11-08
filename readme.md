@@ -55,10 +55,10 @@ Tools used for this project:
 
 ## SreenShots
 
-![Homepage](Screenshots/Sreenshot_1.png)
-![Search Result](Screenshots/Sreenshot_2.png)
-![Reviews on book](Screenshots/Sreenshot_3.png)
-![more reviews](Screenshots/Sreenshot_4.png")
-![User Profile](Screenshots/Sreenshot_5.png")
-![Messaging homepage](Screenshots/Sreenshot_6.png)
-![single chat](Screenshots/Sreenshot_7.png)
+![Homepage](Screenshots/Screenshot_1.png)
+![Search Result](Screenshots/Screenshot_2.png)
+![Reviews on book](Screenshots/Screenshot_3.png)
+![more reviews](Screenshots/Screenshot_4.png")
+![User Profile](Screenshots/Screenshot_5.png")
+![Messaging homepage](Screenshots/Screenshot_6.png)
+![single chat](Screenshots/Screenshot_7.png)
