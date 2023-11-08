@@ -56,7 +56,6 @@ async function reqInfo(
           bookImage![0] += "s:";
           const connectBookImage = bookImage![0] + bookImage![1];
         img = connectBookImage;
-        console.log(img);
       }
 
       //console.log(img);

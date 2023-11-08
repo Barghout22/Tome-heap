@@ -29,6 +29,13 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
+console.log(import.meta.env.VITE_FIREBASE_API_KEY);
+console.log(import.meta.env.VITE_FIREBASE_AUTHDOMAIN);
+console.log(import.meta.env.VITE_FIREBASE_PROJECTID);
+console.log(import.meta.env.VITE_FIREBASE_STORAGEBUCKET);
+console.log(import.meta.env.VITE_FIREBASE_MESSAGINGSENDERID);
+console.log(import.meta.env.VITE_FIREBASE_APP_ID);
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const userDefaultImage =
