@@ -52,7 +52,12 @@ async function reqInfo(
     }) => {
       let img = placeholderImg;
       if (item.volumeInfo.imageLinks) {
-        img = item.volumeInfo.imageLinks.thumbnail;
+          let bookImage = item.volumeInfo.imageLinks.thumbnail.split(":");
+          bookImage![0] += "s:";
+          const connectBookImage = bookImage![0] + bookImage![1];
+          console.log(connectBookImage);
+        img = connectBookImage;
+        console.log(img);
       }
 
       //console.log(img);

@@ -52,83 +52,83 @@ const SingleChatDisp = ({ userID }: { userID: string }) => {
   const bottomRef = useRef<null | HTMLFormElement>(null);
 
   useEffect(() => {
-      getDoc(doc(getFirestore(), "usersData", `user-${viewedUserId}`)).then(
-        (returnVal) => {
-          setViewedUser({
-            username: returnVal.data()!.username,
-            profilePic: returnVal.data()!.profilePicture,
+    getDoc(doc(getFirestore(), "usersData", `user-${viewedUserId}`)).then(
+      (returnVal) => {
+        setViewedUser({
+          username: returnVal.data()!.username,
+          profilePic: returnVal.data()!.profilePicture,
+        });
+      }
+    );
+    getDoc(doc(getFirestore(), "usersData", `user-${CurrentUserId}`)).then(
+      (returnVal) => {
+        setCurrentUser({
+          username: returnVal.data()!.username,
+          profilePic: returnVal.data()!.profilePicture,
+        });
+      }
+    );
+    getDocs(
+      query(
+        collection(
+          getFirestore(),
+          `user-${getAuth().currentUser?.uid}-messages`
+        ),
+        where("otherUserId", "==", viewedUserId),
+        orderBy("timestamp", "desc"),
+        limit(6)
+      )
+    ).then((results) => {
+      if (results.docs.length > 0) {
+        let placeHolderArr: message[] = [];
+        results.docs.forEach((result) => {
+          let timestring = result.data().timestamp.seconds
+            ? result.data().timestamp.seconds * 1000 +
+              result.data().timestamp.nanoseconds / 1000000
+            : result.data().timestamp.nanoseconds / 1000000;
+          placeHolderArr.push({
+            username: result.data().username,
+            otherUserId: result.data().otherUserId,
+            otherUserProfilePic: result.data().otherUserProfilePic,
+            messageBody: result.data().messageBody,
+            timestamp: new Date(timestring).toLocaleString(),
+            messageStatus: result.data().messageStatus,
+            read: true,
           });
-        }
-      );
-      getDoc(doc(getFirestore(), "usersData", `user-${CurrentUserId}`)).then(
-        (returnVal) => {
-          setCurrentUser({
-            username: returnVal.data()!.username,
-            profilePic: returnVal.data()!.profilePicture,
-          });
-        }
-      );
-      getDocs(
-        query(
-          collection(
-            getFirestore(),
-            `user-${getAuth().currentUser?.uid}-messages`
-          ),
-          where("otherUserId", "==", viewedUserId),
-          orderBy("timestamp", "desc"),
-          limit(6)
-        )
-      ).then((results) => {
-        if (results.docs.length > 0) {
-          let placeHolderArr: message[] = [];
-          results.docs.forEach((result) => {
-            let timestring = result.data().timestamp.seconds
-              ? result.data().timestamp.seconds * 1000 +
-                result.data().timestamp.nanoseconds / 1000000
-              : result.data().timestamp.nanoseconds / 1000000;
-            placeHolderArr.push({
-              username: result.data().username,
-              otherUserId: result.data().otherUserId,
-              otherUserProfilePic: result.data().otherUserProfilePic,
-              messageBody: result.data().messageBody,
-              timestamp: new Date(timestring).toLocaleString(),
-              messageStatus: result.data().messageStatus,
-              read: true,
-            });
-            getDocs(
-              query(
-                collection(
+          getDocs(
+            query(
+              collection(
+                getFirestore(),
+                `user-${getAuth().currentUser?.uid}-messages`
+              ),
+
+              where("read", "==", false),
+              where("otherUserId", "==", viewedUserId)
+            )
+          ).then((results) =>
+            results.forEach((result) => {
+              setDoc(
+                doc(
                   getFirestore(),
-                  `user-${getAuth().currentUser?.uid}-messages`
+                  `user-${getAuth().currentUser?.uid}-messages`,
+                  result.id
                 ),
+                { read: true },
+                { merge: true }
+              );
+            })
+          );
+        });
 
-                where("read", "==", false),
-                where("otherUserId", "==", viewedUserId)
-              )
-            ).then((results) =>
-              results.forEach((result) => {
-                setDoc(
-                  doc(
-                    getFirestore(),
-                    `user-${getAuth().currentUser?.uid}-messages`,
-                    result.id
-                  ),
-                  { read: true },
-                  { merge: true }
-                );
-              })
-            );
-          });
+        placeHolderArr.sort(function (a, b) {
+          let timestampA = new Date(a.timestamp).valueOf();
+          let timestampB = new Date(b.timestamp).valueOf();
+          return timestampA - timestampB;
+        });
 
-          placeHolderArr.sort(function (a, b) {
-            let timestampA = new Date(a.timestamp).valueOf();
-            let timestampB = new Date(b.timestamp).valueOf();
-            return timestampA - timestampB;
-          });
-          setUserMessages(placeHolderArr);
-        }
-      });
-    
+        setUserMessages(placeHolderArr);
+      }
+    });
   }, []);
 
   useEffect(() => {

@@ -46,6 +46,7 @@ const BookDispCardComponent = ({
     }
   }, []);
 
+
   const moveToBookDisp = (book: any) => {
     setBookData({
       id: book.id,
